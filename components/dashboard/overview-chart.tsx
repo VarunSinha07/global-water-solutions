@@ -32,7 +32,7 @@ export function OverviewChart({ data }: OverviewChartProps) {
           tickFormatter={(value) => `₹${value}`}
         />
         <Tooltip
-          formatter={(value: number) => [`₹${value}`, "Revenue"]}
+          formatter={(value: number | undefined) => [`₹${value}`, "Revenue"]}
           cursor={{ fill: "transparent" }}
         />
         <Bar
