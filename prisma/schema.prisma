@@ -1,0 +1,188 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum AMCStatus {
+  ACTIVE
+  EXPIRED
+  PENDING_PAYMENT
+}
+
+enum PaymentStatus {
+  PAID
+  PENDING
+  FAILED
+}
+
+enum ComplaintStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+}
+
+enum FinanceType {
+  INCOME
+  EXPENSE
+}
+
+
+model User {
+  id            String    @id @default(cuid())
+  name          String
+  email         String
+  emailVerified Boolean   @default(false)
+  image         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+  role          String?   @default("user")
+  assignedComplaints Complaint[] @relation("TechnicianComplaints")
+
+  @@unique([email])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+
+model Customer {
+  id        String   @id @default(uuid())
+  name      String
+  address   String
+  phone     String
+  email     String?
+  createdAt DateTime @default(now())
+
+  services      Service[]
+  amcs          AMCContract[]
+  payments      Payment[]
+  complaints    Complaint[]
+}
+
+model Service {
+  id               String   @id @default(uuid())
+  customerId       String
+  serviceType      String
+  installationDate DateTime
+
+  customer     Customer      @relation(fields: [customerId], references: [id])
+  complaints   Complaint[]
+  amcContracts AMCContract[]
+}
+
+model AMCContract {
+  id          String    @id @default(uuid())
+  customerId  String
+  serviceId   String
+  startDate   DateTime
+  endDate     DateTime
+  renewalDate DateTime
+  amount      Float
+  status      AMCStatus
+  createdAt   DateTime  @default(now())
+
+  customer Customer  @relation(fields: [customerId], references: [id])
+  service  Service   @relation(fields: [serviceId], references: [id])
+  payments Payment[]
+}
+
+model Payment {
+  id          String        @id @default(uuid())
+  customerId  String
+  amcId       String?
+  amount      Float
+  status      PaymentStatus
+  paymentMode String
+  paymentDate DateTime?
+  createdAt   DateTime      @default(now())
+
+  customer   Customer     @relation(fields: [customerId], references: [id])
+  amc        AMCContract? @relation(fields: [amcId], references: [id])
+  financeLog FinanceLog?
+}
+
+model Complaint {
+  id           String           @id @default(uuid())
+  customerId   String
+  serviceId    String
+  technicianId String?
+  description  String
+  status       ComplaintStatus
+  createdAt    DateTime         @default(now())
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  service    Service  @relation(fields: [serviceId], references: [id])
+  technician User?    @relation("TechnicianComplaints", fields: [technicianId], references: [id])
+}
+
+
+
+model FinanceLog {
+  id          String      @id @default(uuid())
+  type        FinanceType
+  referenceId String      @unique
+  amount      Float
+  createdAt   DateTime    @default(now())
+
+  payment Payment? @relation(fields: [referenceId], references: [id])
+}
