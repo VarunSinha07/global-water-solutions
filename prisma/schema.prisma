@@ -45,10 +45,12 @@ model User {
   email         String
   emailVerified Boolean   @default(false)
   image         String?
+  phone         String?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  notifications Notification[]
   role          String?   @default("user")
   assignedComplaints Complaint[] @relation("TechnicianComplaints")
 
@@ -185,4 +187,15 @@ model FinanceLog {
   createdAt   DateTime    @default(now())
 
   payment Payment? @relation(fields: [referenceId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  type      String   @default("INFO")
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

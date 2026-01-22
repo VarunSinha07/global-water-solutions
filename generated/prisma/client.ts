@@ -89,3 +89,8 @@ export type Complaint = Prisma.ComplaintModel
  * 
  */
 export type FinanceLog = Prisma.FinanceLogModel
+/**
+ * Model Notification
+ * 
+ */
+export type Notification = Prisma.NotificationModel

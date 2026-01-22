@@ -60,7 +60,8 @@ export const ModelName = {
   AMCContract: 'AMCContract',
   Payment: 'Payment',
   Complaint: 'Complaint',
-  FinanceLog: 'FinanceLog'
+  FinanceLog: 'FinanceLog',
+  Notification: 'Notification'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -85,6 +86,7 @@ export const UserScalarFieldEnum = {
   email: 'email',
   emailVerified: 'emailVerified',
   image: 'image',
+  phone: 'phone',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt',
   role: 'role'
@@ -211,6 +213,19 @@ export const FinanceLogScalarFieldEnum = {
 } as const
 
 export type FinanceLogScalarFieldEnum = (typeof FinanceLogScalarFieldEnum)[keyof typeof FinanceLogScalarFieldEnum]
+
+
+export const NotificationScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  title: 'title',
+  message: 'message',
+  type: 'type',
+  isRead: 'isRead',
+  createdAt: 'createdAt'
+} as const
+
+export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
 
 
 export const SortOrder = {

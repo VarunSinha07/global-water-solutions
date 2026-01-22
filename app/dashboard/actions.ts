@@ -4,32 +4,43 @@ import { prisma } from "@/lib/db";
 import { $Enums } from "@/generated/prisma/client";
 
 export async function getDashboardStats() {
-  const [totalCustomers, activeAMCs, pendingAMCsCount, openComplaintsCount] =
-    await Promise.all([
-      prisma.customer.count(),
-      prisma.aMCContract.count({
-        where: {
-          status: $Enums.AMCStatus.ACTIVE,
-        },
-      }),
-      prisma.aMCContract.count({
-        where: {
-          status: $Enums.AMCStatus.PENDING_PAYMENT,
-        },
-      }),
-      prisma.complaint.count({
-        where: {
-          status: $Enums.ComplaintStatus.OPEN,
-        },
-      }),
-    ]);
+  const [totalCustomers, activeAMCs, openComplaintsCount] = await Promise.all([
+    prisma.customer.count(),
+    prisma.aMCContract.count({
+      where: {
+        status: $Enums.AMCStatus.ACTIVE,
+      },
+    }),
+    prisma.complaint.count({
+      where: {
+        status: $Enums.ComplaintStatus.OPEN,
+      },
+    }),
+  ]);
 
-  // Calculate pending amount from pending AMCs
-  const pendingAMCs = await prisma.aMCContract.findMany({
-    where: { status: $Enums.AMCStatus.PENDING_PAYMENT },
-    select: { amount: true },
+  // Calculate pending amount dynamically
+  // Fetch all contracts with their payments to calculate real pending dues
+  const allAMCs = await prisma.aMCContract.findMany({
+    include: {
+      payments: true,
+    },
   });
-  const pendingAmount = pendingAMCs.reduce((sum, amc) => sum + amc.amount, 0);
+
+  let pendingAmount = 0;
+  let pendingAMCsCount = 0;
+
+  for (const amc of allAMCs) {
+    const paidAmount = amc.payments
+      .filter((p) => p.status === "PAID")
+      .reduce((sum, p) => sum + p.amount, 0);
+
+    const due = amc.amount - paidAmount;
+
+    if (due > 0) {
+      pendingAmount += due;
+      pendingAMCsCount++;
+    }
+  }
 
   return {
     totalCustomers,
@@ -88,12 +99,13 @@ export async function getMonthlyRevenue() {
   sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
   sixMonthsAgo.setHours(0, 0, 0, 0);
 
-  const payments = await prisma.financeLog.findMany({
+  // Fetch payments directly instead of FinanceLog to ensure data shows up from Payment records
+  const payments = await prisma.payment.findMany({
     where: {
+      status: "PAID",
       createdAt: {
         gte: sixMonthsAgo,
       },
-      type: "INCOME",
     },
     orderBy: {
       createdAt: "asc",
@@ -101,7 +113,7 @@ export async function getMonthlyRevenue() {
   });
 
   // Aggregate by month
-  const monthlyData: Record<string, number> = {};
+  const monthlyData: Record<string, { revenue: number }> = {};
   const months = [
     "Jan",
     "Feb",
@@ -117,21 +129,49 @@ export async function getMonthlyRevenue() {
     "Dec",
   ];
 
-  // Initialize last 6 months to ensure we have data points even if they are 0
+  // Initialize last 6 months
   for (let i = 5; i >= 0; i--) {
     const d = new Date();
     d.setMonth(d.getMonth() - i);
-    const key = `${months[d.getMonth()]} ${d.getFullYear()}`;
-    monthlyData[key] = 0;
+    const key = months[d.getMonth()];
+    monthlyData[key] = { revenue: 0 };
   }
 
-  payments.forEach((p) => {
-    const d = new Date(p.createdAt);
-    const key = `${months[d.getMonth()]} ${d.getFullYear()}`;
-    if (monthlyData[key] !== undefined) {
-      monthlyData[key] += p.amount;
+  payments.forEach((payment) => {
+    // Prefer paymentDate if exists, else fallback to createdAt
+    const d = payment.paymentDate
+      ? new Date(payment.paymentDate)
+      : new Date(payment.createdAt);
+    const key = months[d.getMonth()];
+    // Simply sum up the successful payment amounts
+    if (monthlyData[key]) {
+      monthlyData[key].revenue += payment.amount;
     }
   });
 
-  return Object.entries(monthlyData).map(([name, total]) => ({ name, total }));
+  return Object.entries(monthlyData).map(([name, data]) => ({
+    name,
+    revenue: data.revenue,
+  }));
+}
+
+export async function getRecentActivity() {
+  const payments = await prisma.payment.findMany({
+    take: 5,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      customer: true,
+    },
+  });
+
+  return payments.map((payment) => ({
+    id: payment.id,
+    type: payment.status === "PAID" ? "Payment Received" : "Payment Pending",
+    from: payment.customer.name,
+    amount: payment.amount,
+    status: payment.status,
+    date: payment.createdAt,
+  }));
 }
