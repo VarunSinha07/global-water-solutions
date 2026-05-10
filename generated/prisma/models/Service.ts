@@ -43,7 +43,6 @@ export type ServiceMinAggregateOutputType = {
   paymentMode: string | null
   amount: number | null
   status: $Enums.ServiceStatus | null
-  technicianId: string | null
   paymentStatus: $Enums.ServicePaymentStatus | null
   serviceRegisterDate: Date | null
   serviceCompleteDate: Date | null
@@ -59,7 +58,6 @@ export type ServiceMaxAggregateOutputType = {
   paymentMode: string | null
   amount: number | null
   status: $Enums.ServiceStatus | null
-  technicianId: string | null
   paymentStatus: $Enums.ServicePaymentStatus | null
   serviceRegisterDate: Date | null
   serviceCompleteDate: Date | null
@@ -75,7 +73,6 @@ export type ServiceCountAggregateOutputType = {
   paymentMode: number
   amount: number
   status: number
-  technicianId: number
   paymentStatus: number
   serviceRegisterDate: number
   serviceCompleteDate: number
@@ -101,7 +98,6 @@ export type ServiceMinAggregateInputType = {
   paymentMode?: true
   amount?: true
   status?: true
-  technicianId?: true
   paymentStatus?: true
   serviceRegisterDate?: true
   serviceCompleteDate?: true
@@ -117,7 +113,6 @@ export type ServiceMaxAggregateInputType = {
   paymentMode?: true
   amount?: true
   status?: true
-  technicianId?: true
   paymentStatus?: true
   serviceRegisterDate?: true
   serviceCompleteDate?: true
@@ -133,7 +128,6 @@ export type ServiceCountAggregateInputType = {
   paymentMode?: true
   amount?: true
   status?: true
-  technicianId?: true
   paymentStatus?: true
   serviceRegisterDate?: true
   serviceCompleteDate?: true
@@ -236,7 +230,6 @@ export type ServiceGroupByOutputType = {
   paymentMode: string | null
   amount: number | null
   status: $Enums.ServiceStatus
-  technicianId: string | null
   paymentStatus: $Enums.ServicePaymentStatus | null
   serviceRegisterDate: Date
   serviceCompleteDate: Date | null
@@ -275,13 +268,11 @@ export type ServiceWhereInput = {
   paymentMode?: Prisma.StringNullableFilter<"Service"> | string | null
   amount?: Prisma.FloatNullableFilter<"Service"> | number | null
   status?: Prisma.EnumServiceStatusFilter<"Service"> | $Enums.ServiceStatus
-  technicianId?: Prisma.StringNullableFilter<"Service"> | string | null
   paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Service"> | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFilter<"Service"> | Date | string
   serviceCompleteDate?: Prisma.DateTimeNullableFilter<"Service"> | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFilter<"Service"> | Date | string
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
-  technician?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   complaints?: Prisma.ComplaintListRelationFilter
   amcContracts?: Prisma.AMCContractListRelationFilter
 }
@@ -295,13 +286,11 @@ export type ServiceOrderByWithRelationInput = {
   paymentMode?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  technicianId?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrderInput | Prisma.SortOrder
   nextServiceDueDate?: Prisma.SortOrder
   customer?: Prisma.CustomerOrderByWithRelationInput
-  technician?: Prisma.UserOrderByWithRelationInput
   complaints?: Prisma.ComplaintOrderByRelationAggregateInput
   amcContracts?: Prisma.AMCContractOrderByRelationAggregateInput
 }
@@ -318,13 +307,11 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   paymentMode?: Prisma.StringNullableFilter<"Service"> | string | null
   amount?: Prisma.FloatNullableFilter<"Service"> | number | null
   status?: Prisma.EnumServiceStatusFilter<"Service"> | $Enums.ServiceStatus
-  technicianId?: Prisma.StringNullableFilter<"Service"> | string | null
   paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Service"> | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFilter<"Service"> | Date | string
   serviceCompleteDate?: Prisma.DateTimeNullableFilter<"Service"> | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFilter<"Service"> | Date | string
   customer?: Prisma.XOR<Prisma.CustomerScalarRelationFilter, Prisma.CustomerWhereInput>
-  technician?: Prisma.XOR<Prisma.UserNullableScalarRelationFilter, Prisma.UserWhereInput> | null
   complaints?: Prisma.ComplaintListRelationFilter
   amcContracts?: Prisma.AMCContractListRelationFilter
 }, "id" | "serviceNumber">
@@ -338,7 +325,6 @@ export type ServiceOrderByWithAggregationInput = {
   paymentMode?: Prisma.SortOrderInput | Prisma.SortOrder
   amount?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
-  technicianId?: Prisma.SortOrderInput | Prisma.SortOrder
   paymentStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -362,7 +348,6 @@ export type ServiceScalarWhereWithAggregatesInput = {
   paymentMode?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
   amount?: Prisma.FloatNullableWithAggregatesFilter<"Service"> | number | null
   status?: Prisma.EnumServiceStatusWithAggregatesFilter<"Service"> | $Enums.ServiceStatus
-  technicianId?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
   paymentStatus?: Prisma.EnumServicePaymentStatusNullableWithAggregatesFilter<"Service"> | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
   serviceCompleteDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Service"> | Date | string | null
@@ -382,7 +367,6 @@ export type ServiceCreateInput = {
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutServicesInput
-  technician?: Prisma.UserCreateNestedOneWithoutAssignedServicesInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutServiceInput
   amcContracts?: Prisma.AMCContractCreateNestedManyWithoutServiceInput
 }
@@ -396,7 +380,6 @@ export type ServiceUncheckedCreateInput = {
   paymentMode?: string | null
   amount?: number | null
   status?: $Enums.ServiceStatus
-  technicianId?: string | null
   paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
@@ -418,7 +401,6 @@ export type ServiceUpdateInput = {
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutServicesNestedInput
-  technician?: Prisma.UserUpdateOneWithoutAssignedServicesNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutServiceNestedInput
   amcContracts?: Prisma.AMCContractUpdateManyWithoutServiceNestedInput
 }
@@ -432,7 +414,6 @@ export type ServiceUncheckedUpdateInput = {
   paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  technicianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -450,7 +431,6 @@ export type ServiceCreateManyInput = {
   paymentMode?: string | null
   amount?: number | null
   status?: $Enums.ServiceStatus
-  technicianId?: string | null
   paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
@@ -480,7 +460,6 @@ export type ServiceUncheckedUpdateManyInput = {
   paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  technicianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -506,7 +485,6 @@ export type ServiceCountOrderByAggregateInput = {
   paymentMode?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  technicianId?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrder
@@ -526,7 +504,6 @@ export type ServiceMaxOrderByAggregateInput = {
   paymentMode?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  technicianId?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrder
@@ -542,7 +519,6 @@ export type ServiceMinOrderByAggregateInput = {
   paymentMode?: Prisma.SortOrder
   amount?: Prisma.SortOrder
   status?: Prisma.SortOrder
-  technicianId?: Prisma.SortOrder
   paymentStatus?: Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrder
@@ -556,48 +532,6 @@ export type ServiceSumOrderByAggregateInput = {
 export type ServiceScalarRelationFilter = {
   is?: Prisma.ServiceWhereInput
   isNot?: Prisma.ServiceWhereInput
-}
-
-export type ServiceCreateNestedManyWithoutTechnicianInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutTechnicianInput, Prisma.ServiceUncheckedCreateWithoutTechnicianInput> | Prisma.ServiceCreateWithoutTechnicianInput[] | Prisma.ServiceUncheckedCreateWithoutTechnicianInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutTechnicianInput | Prisma.ServiceCreateOrConnectWithoutTechnicianInput[]
-  createMany?: Prisma.ServiceCreateManyTechnicianInputEnvelope
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-}
-
-export type ServiceUncheckedCreateNestedManyWithoutTechnicianInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutTechnicianInput, Prisma.ServiceUncheckedCreateWithoutTechnicianInput> | Prisma.ServiceCreateWithoutTechnicianInput[] | Prisma.ServiceUncheckedCreateWithoutTechnicianInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutTechnicianInput | Prisma.ServiceCreateOrConnectWithoutTechnicianInput[]
-  createMany?: Prisma.ServiceCreateManyTechnicianInputEnvelope
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-}
-
-export type ServiceUpdateManyWithoutTechnicianNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutTechnicianInput, Prisma.ServiceUncheckedCreateWithoutTechnicianInput> | Prisma.ServiceCreateWithoutTechnicianInput[] | Prisma.ServiceUncheckedCreateWithoutTechnicianInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutTechnicianInput | Prisma.ServiceCreateOrConnectWithoutTechnicianInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutTechnicianInput | Prisma.ServiceUpsertWithWhereUniqueWithoutTechnicianInput[]
-  createMany?: Prisma.ServiceCreateManyTechnicianInputEnvelope
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutTechnicianInput | Prisma.ServiceUpdateWithWhereUniqueWithoutTechnicianInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutTechnicianInput | Prisma.ServiceUpdateManyWithWhereWithoutTechnicianInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-}
-
-export type ServiceUncheckedUpdateManyWithoutTechnicianNestedInput = {
-  create?: Prisma.XOR<Prisma.ServiceCreateWithoutTechnicianInput, Prisma.ServiceUncheckedCreateWithoutTechnicianInput> | Prisma.ServiceCreateWithoutTechnicianInput[] | Prisma.ServiceUncheckedCreateWithoutTechnicianInput[]
-  connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutTechnicianInput | Prisma.ServiceCreateOrConnectWithoutTechnicianInput[]
-  upsert?: Prisma.ServiceUpsertWithWhereUniqueWithoutTechnicianInput | Prisma.ServiceUpsertWithWhereUniqueWithoutTechnicianInput[]
-  createMany?: Prisma.ServiceCreateManyTechnicianInputEnvelope
-  set?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  disconnect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  delete?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  connect?: Prisma.ServiceWhereUniqueInput | Prisma.ServiceWhereUniqueInput[]
-  update?: Prisma.ServiceUpdateWithWhereUniqueWithoutTechnicianInput | Prisma.ServiceUpdateWithWhereUniqueWithoutTechnicianInput[]
-  updateMany?: Prisma.ServiceUpdateManyWithWhereWithoutTechnicianInput | Prisma.ServiceUpdateManyWithWhereWithoutTechnicianInput[]
-  deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
 }
 
 export type ServiceCreateNestedManyWithoutCustomerInput = {
@@ -674,85 +608,6 @@ export type ServiceUpdateOneRequiredWithoutComplaintsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ServiceUpdateToOneWithWhereWithoutComplaintsInput, Prisma.ServiceUpdateWithoutComplaintsInput>, Prisma.ServiceUncheckedUpdateWithoutComplaintsInput>
 }
 
-export type ServiceCreateWithoutTechnicianInput = {
-  id?: string
-  serviceNumber?: string | null
-  serviceType: string
-  plantCategory?: $Enums.PlantCategory | null
-  paymentMode?: string | null
-  amount?: number | null
-  status?: $Enums.ServiceStatus
-  paymentStatus?: $Enums.ServicePaymentStatus | null
-  serviceRegisterDate?: Date | string
-  serviceCompleteDate?: Date | string | null
-  nextServiceDueDate?: Date | string
-  customer: Prisma.CustomerCreateNestedOneWithoutServicesInput
-  complaints?: Prisma.ComplaintCreateNestedManyWithoutServiceInput
-  amcContracts?: Prisma.AMCContractCreateNestedManyWithoutServiceInput
-}
-
-export type ServiceUncheckedCreateWithoutTechnicianInput = {
-  id?: string
-  serviceNumber?: string | null
-  customerId: string
-  serviceType: string
-  plantCategory?: $Enums.PlantCategory | null
-  paymentMode?: string | null
-  amount?: number | null
-  status?: $Enums.ServiceStatus
-  paymentStatus?: $Enums.ServicePaymentStatus | null
-  serviceRegisterDate?: Date | string
-  serviceCompleteDate?: Date | string | null
-  nextServiceDueDate?: Date | string
-  complaints?: Prisma.ComplaintUncheckedCreateNestedManyWithoutServiceInput
-  amcContracts?: Prisma.AMCContractUncheckedCreateNestedManyWithoutServiceInput
-}
-
-export type ServiceCreateOrConnectWithoutTechnicianInput = {
-  where: Prisma.ServiceWhereUniqueInput
-  create: Prisma.XOR<Prisma.ServiceCreateWithoutTechnicianInput, Prisma.ServiceUncheckedCreateWithoutTechnicianInput>
-}
-
-export type ServiceCreateManyTechnicianInputEnvelope = {
-  data: Prisma.ServiceCreateManyTechnicianInput | Prisma.ServiceCreateManyTechnicianInput[]
-  skipDuplicates?: boolean
-}
-
-export type ServiceUpsertWithWhereUniqueWithoutTechnicianInput = {
-  where: Prisma.ServiceWhereUniqueInput
-  update: Prisma.XOR<Prisma.ServiceUpdateWithoutTechnicianInput, Prisma.ServiceUncheckedUpdateWithoutTechnicianInput>
-  create: Prisma.XOR<Prisma.ServiceCreateWithoutTechnicianInput, Prisma.ServiceUncheckedCreateWithoutTechnicianInput>
-}
-
-export type ServiceUpdateWithWhereUniqueWithoutTechnicianInput = {
-  where: Prisma.ServiceWhereUniqueInput
-  data: Prisma.XOR<Prisma.ServiceUpdateWithoutTechnicianInput, Prisma.ServiceUncheckedUpdateWithoutTechnicianInput>
-}
-
-export type ServiceUpdateManyWithWhereWithoutTechnicianInput = {
-  where: Prisma.ServiceScalarWhereInput
-  data: Prisma.XOR<Prisma.ServiceUpdateManyMutationInput, Prisma.ServiceUncheckedUpdateManyWithoutTechnicianInput>
-}
-
-export type ServiceScalarWhereInput = {
-  AND?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-  OR?: Prisma.ServiceScalarWhereInput[]
-  NOT?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
-  id?: Prisma.StringFilter<"Service"> | string
-  serviceNumber?: Prisma.StringNullableFilter<"Service"> | string | null
-  customerId?: Prisma.StringFilter<"Service"> | string
-  serviceType?: Prisma.StringFilter<"Service"> | string
-  plantCategory?: Prisma.EnumPlantCategoryNullableFilter<"Service"> | $Enums.PlantCategory | null
-  paymentMode?: Prisma.StringNullableFilter<"Service"> | string | null
-  amount?: Prisma.FloatNullableFilter<"Service"> | number | null
-  status?: Prisma.EnumServiceStatusFilter<"Service"> | $Enums.ServiceStatus
-  technicianId?: Prisma.StringNullableFilter<"Service"> | string | null
-  paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Service"> | $Enums.ServicePaymentStatus | null
-  serviceRegisterDate?: Prisma.DateTimeFilter<"Service"> | Date | string
-  serviceCompleteDate?: Prisma.DateTimeNullableFilter<"Service"> | Date | string | null
-  nextServiceDueDate?: Prisma.DateTimeFilter<"Service"> | Date | string
-}
-
 export type ServiceCreateWithoutCustomerInput = {
   id?: string
   serviceNumber?: string | null
@@ -765,7 +620,6 @@ export type ServiceCreateWithoutCustomerInput = {
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
-  technician?: Prisma.UserCreateNestedOneWithoutAssignedServicesInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutServiceInput
   amcContracts?: Prisma.AMCContractCreateNestedManyWithoutServiceInput
 }
@@ -778,7 +632,6 @@ export type ServiceUncheckedCreateWithoutCustomerInput = {
   paymentMode?: string | null
   amount?: number | null
   status?: $Enums.ServiceStatus
-  technicianId?: string | null
   paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
@@ -813,6 +666,24 @@ export type ServiceUpdateManyWithWhereWithoutCustomerInput = {
   data: Prisma.XOR<Prisma.ServiceUpdateManyMutationInput, Prisma.ServiceUncheckedUpdateManyWithoutCustomerInput>
 }
 
+export type ServiceScalarWhereInput = {
+  AND?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
+  OR?: Prisma.ServiceScalarWhereInput[]
+  NOT?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
+  id?: Prisma.StringFilter<"Service"> | string
+  serviceNumber?: Prisma.StringNullableFilter<"Service"> | string | null
+  customerId?: Prisma.StringFilter<"Service"> | string
+  serviceType?: Prisma.StringFilter<"Service"> | string
+  plantCategory?: Prisma.EnumPlantCategoryNullableFilter<"Service"> | $Enums.PlantCategory | null
+  paymentMode?: Prisma.StringNullableFilter<"Service"> | string | null
+  amount?: Prisma.FloatNullableFilter<"Service"> | number | null
+  status?: Prisma.EnumServiceStatusFilter<"Service"> | $Enums.ServiceStatus
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Service"> | $Enums.ServicePaymentStatus | null
+  serviceRegisterDate?: Prisma.DateTimeFilter<"Service"> | Date | string
+  serviceCompleteDate?: Prisma.DateTimeNullableFilter<"Service"> | Date | string | null
+  nextServiceDueDate?: Prisma.DateTimeFilter<"Service"> | Date | string
+}
+
 export type ServiceCreateWithoutAmcContractsInput = {
   id?: string
   serviceNumber?: string | null
@@ -826,7 +697,6 @@ export type ServiceCreateWithoutAmcContractsInput = {
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutServicesInput
-  technician?: Prisma.UserCreateNestedOneWithoutAssignedServicesInput
   complaints?: Prisma.ComplaintCreateNestedManyWithoutServiceInput
 }
 
@@ -839,7 +709,6 @@ export type ServiceUncheckedCreateWithoutAmcContractsInput = {
   paymentMode?: string | null
   amount?: number | null
   status?: $Enums.ServiceStatus
-  technicianId?: string | null
   paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
@@ -876,7 +745,6 @@ export type ServiceUpdateWithoutAmcContractsInput = {
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutServicesNestedInput
-  technician?: Prisma.UserUpdateOneWithoutAssignedServicesNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutServiceNestedInput
 }
 
@@ -889,7 +757,6 @@ export type ServiceUncheckedUpdateWithoutAmcContractsInput = {
   paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  technicianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -910,7 +777,6 @@ export type ServiceCreateWithoutComplaintsInput = {
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
   customer: Prisma.CustomerCreateNestedOneWithoutServicesInput
-  technician?: Prisma.UserCreateNestedOneWithoutAssignedServicesInput
   amcContracts?: Prisma.AMCContractCreateNestedManyWithoutServiceInput
 }
 
@@ -923,7 +789,6 @@ export type ServiceUncheckedCreateWithoutComplaintsInput = {
   paymentMode?: string | null
   amount?: number | null
   status?: $Enums.ServiceStatus
-  technicianId?: string | null
   paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
@@ -960,7 +825,6 @@ export type ServiceUpdateWithoutComplaintsInput = {
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   customer?: Prisma.CustomerUpdateOneRequiredWithoutServicesNestedInput
-  technician?: Prisma.UserUpdateOneWithoutAssignedServicesNestedInput
   amcContracts?: Prisma.AMCContractUpdateManyWithoutServiceNestedInput
 }
 
@@ -973,76 +837,11 @@ export type ServiceUncheckedUpdateWithoutComplaintsInput = {
   paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  technicianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amcContracts?: Prisma.AMCContractUncheckedUpdateManyWithoutServiceNestedInput
-}
-
-export type ServiceCreateManyTechnicianInput = {
-  id?: string
-  serviceNumber?: string | null
-  customerId: string
-  serviceType: string
-  plantCategory?: $Enums.PlantCategory | null
-  paymentMode?: string | null
-  amount?: number | null
-  status?: $Enums.ServiceStatus
-  paymentStatus?: $Enums.ServicePaymentStatus | null
-  serviceRegisterDate?: Date | string
-  serviceCompleteDate?: Date | string | null
-  nextServiceDueDate?: Date | string
-}
-
-export type ServiceUpdateWithoutTechnicianInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  serviceType?: Prisma.StringFieldUpdateOperationsInput | string
-  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
-  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
-  serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  customer?: Prisma.CustomerUpdateOneRequiredWithoutServicesNestedInput
-  complaints?: Prisma.ComplaintUpdateManyWithoutServiceNestedInput
-  amcContracts?: Prisma.AMCContractUpdateManyWithoutServiceNestedInput
-}
-
-export type ServiceUncheckedUpdateWithoutTechnicianInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceType?: Prisma.StringFieldUpdateOperationsInput | string
-  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
-  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
-  serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  complaints?: Prisma.ComplaintUncheckedUpdateManyWithoutServiceNestedInput
-  amcContracts?: Prisma.AMCContractUncheckedUpdateManyWithoutServiceNestedInput
-}
-
-export type ServiceUncheckedUpdateManyWithoutTechnicianInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceNumber?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  customerId?: Prisma.StringFieldUpdateOperationsInput | string
-  serviceType?: Prisma.StringFieldUpdateOperationsInput | string
-  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
-  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
-  status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
-  serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
-  nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ServiceCreateManyCustomerInput = {
@@ -1053,7 +852,6 @@ export type ServiceCreateManyCustomerInput = {
   paymentMode?: string | null
   amount?: number | null
   status?: $Enums.ServiceStatus
-  technicianId?: string | null
   paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
@@ -1072,7 +870,6 @@ export type ServiceUpdateWithoutCustomerInput = {
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  technician?: Prisma.UserUpdateOneWithoutAssignedServicesNestedInput
   complaints?: Prisma.ComplaintUpdateManyWithoutServiceNestedInput
   amcContracts?: Prisma.AMCContractUpdateManyWithoutServiceNestedInput
 }
@@ -1085,7 +882,6 @@ export type ServiceUncheckedUpdateWithoutCustomerInput = {
   paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  technicianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1102,7 +898,6 @@ export type ServiceUncheckedUpdateManyWithoutCustomerInput = {
   paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   status?: Prisma.EnumServiceStatusFieldUpdateOperationsInput | $Enums.ServiceStatus
-  technicianId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -1158,13 +953,11 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   paymentMode?: boolean
   amount?: boolean
   status?: boolean
-  technicianId?: boolean
   paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  technician?: boolean | Prisma.Service$technicianArgs<ExtArgs>
   complaints?: boolean | Prisma.Service$complaintsArgs<ExtArgs>
   amcContracts?: boolean | Prisma.Service$amcContractsArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
@@ -1179,13 +972,11 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   paymentMode?: boolean
   amount?: boolean
   status?: boolean
-  technicianId?: boolean
   paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  technician?: boolean | Prisma.Service$technicianArgs<ExtArgs>
 }, ExtArgs["result"]["service"]>
 
 export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -1197,13 +988,11 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   paymentMode?: boolean
   amount?: boolean
   status?: boolean
-  technicianId?: boolean
   paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  technician?: boolean | Prisma.Service$technicianArgs<ExtArgs>
 }, ExtArgs["result"]["service"]>
 
 export type ServiceSelectScalar = {
@@ -1215,35 +1004,30 @@ export type ServiceSelectScalar = {
   paymentMode?: boolean
   amount?: boolean
   status?: boolean
-  technicianId?: boolean
   paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceNumber" | "customerId" | "serviceType" | "plantCategory" | "paymentMode" | "amount" | "status" | "technicianId" | "paymentStatus" | "serviceRegisterDate" | "serviceCompleteDate" | "nextServiceDueDate", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "serviceNumber" | "customerId" | "serviceType" | "plantCategory" | "paymentMode" | "amount" | "status" | "paymentStatus" | "serviceRegisterDate" | "serviceCompleteDate" | "nextServiceDueDate", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  technician?: boolean | Prisma.Service$technicianArgs<ExtArgs>
   complaints?: boolean | Prisma.Service$complaintsArgs<ExtArgs>
   amcContracts?: boolean | Prisma.Service$amcContractsArgs<ExtArgs>
   _count?: boolean | Prisma.ServiceCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ServiceIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  technician?: boolean | Prisma.Service$technicianArgs<ExtArgs>
 }
 export type ServiceIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
-  technician?: boolean | Prisma.Service$technicianArgs<ExtArgs>
 }
 
 export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Service"
   objects: {
     customer: Prisma.$CustomerPayload<ExtArgs>
-    technician: Prisma.$UserPayload<ExtArgs> | null
     complaints: Prisma.$ComplaintPayload<ExtArgs>[]
     amcContracts: Prisma.$AMCContractPayload<ExtArgs>[]
   }
@@ -1256,7 +1040,6 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     paymentMode: string | null
     amount: number | null
     status: $Enums.ServiceStatus
-    technicianId: string | null
     paymentStatus: $Enums.ServicePaymentStatus | null
     serviceRegisterDate: Date
     serviceCompleteDate: Date | null
@@ -1656,7 +1439,6 @@ readonly fields: ServiceFieldRefs;
 export interface Prisma__ServiceClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   customer<T extends Prisma.CustomerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.CustomerDefaultArgs<ExtArgs>>): Prisma.Prisma__CustomerClient<runtime.Types.Result.GetResult<Prisma.$CustomerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
-  technician<T extends Prisma.Service$technicianArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$technicianArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   complaints<T extends Prisma.Service$complaintsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$complaintsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ComplaintPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   amcContracts<T extends Prisma.Service$amcContractsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Service$amcContractsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AMCContractPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1696,7 +1478,6 @@ export interface ServiceFieldRefs {
   readonly paymentMode: Prisma.FieldRef<"Service", 'String'>
   readonly amount: Prisma.FieldRef<"Service", 'Float'>
   readonly status: Prisma.FieldRef<"Service", 'ServiceStatus'>
-  readonly technicianId: Prisma.FieldRef<"Service", 'String'>
   readonly paymentStatus: Prisma.FieldRef<"Service", 'ServicePaymentStatus'>
   readonly serviceRegisterDate: Prisma.FieldRef<"Service", 'DateTime'>
   readonly serviceCompleteDate: Prisma.FieldRef<"Service", 'DateTime'>
@@ -2094,25 +1875,6 @@ export type ServiceDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Inter
    * Limit how many Services to delete.
    */
   limit?: number
-}
-
-/**
- * Service.technician
- */
-export type Service$technicianArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  /**
-   * Select specific fields to fetch from the User
-   */
-  select?: Prisma.UserSelect<ExtArgs> | null
-  /**
-   * Omit specific fields from the User
-   */
-  omit?: Prisma.UserOmit<ExtArgs> | null
-  /**
-   * Choose, which related nodes to fetch as well
-   */
-  include?: Prisma.UserInclude<ExtArgs> | null
-  where?: Prisma.UserWhereInput
 }
 
 /**

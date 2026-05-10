@@ -98,7 +98,7 @@ export function ServicesTable({ services }: ServicesTableProps) {
                     {service.serviceType}
                   </td>
                   <td className="px-6 py-4 text-slate-700 font-medium">
-                    {service.technician?.name || "Unassigned"}
+                    {service.paymentStatus || "UNPAID"}
                   </td>
                   <td className="px-6 py-4 text-slate-700 font-medium">
                     {new Date(service.serviceRegisterDate).toLocaleDateString(

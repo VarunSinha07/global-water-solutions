@@ -111,7 +111,6 @@ export async function updateService(serviceId: string, formData: FormData) {
   const paymentStatus = formData.get("paymentStatus") as string;
   const amount = formData.get("amount") as string;
   const status = formData.get("status") as string;
-  const technicianId = formData.get("technicianId") as string;
 
   try {
     const existing = await prisma.service.findUnique({
@@ -138,7 +137,6 @@ export async function updateService(serviceId: string, formData: FormData) {
         paymentStatus: (paymentStatus as any) || null,
         status: (status as any) || undefined,
         amount: amount ? parseFloat(amount) : null,
-        technicianId: technicianId || undefined,
       },
     });
 

@@ -63,7 +63,6 @@ export default async function ServicesPage({
     where,
     include: {
       customer: true,
-      technician: true,
       _count: { select: { amcContracts: true, complaints: true } },
     },
     orderBy,

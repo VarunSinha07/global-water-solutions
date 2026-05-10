@@ -28,7 +28,6 @@ export default async function ServiceDetailsPage({
     where: { id: serviceId },
     include: {
       customer: true,
-      technician: true,
       amcContracts: true,
     },
   });
@@ -116,10 +115,10 @@ export default async function ServiceDetailsPage({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
-                Technician
+                Status
               </p>
               <p className="text-lg font-bold text-[#2e3458]">
-                {service.technician?.name || "Unassigned"}
+                {service.status.replace("_", " ")}
               </p>
             </div>
           </div>
