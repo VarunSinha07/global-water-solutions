@@ -169,6 +169,7 @@ export const ServiceScalarFieldEnum = {
   paymentMode: 'paymentMode',
   amount: 'amount',
   status: 'status',
+  technicianId: 'technicianId',
   paymentStatus: 'paymentStatus',
   serviceRegisterDate: 'serviceRegisterDate',
   serviceCompleteDate: 'serviceCompleteDate',

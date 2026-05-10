@@ -3,7 +3,12 @@ import Link from "next/link";
 import { prisma } from "@/lib/db";
 import { createService } from "../actions";
 
-export default async function NewServicePage() {
+export default async function NewServicePage({
+  searchParams,
+}: {
+  searchParams: { [key: string]: string | string[] | undefined };
+}) {
+  const defaultCustomerId = searchParams?.customerId as string;
   const customers = await prisma.customer.findMany({
     orderBy: { name: "asc" },
     select: { id: true, name: true, phone: true },
@@ -55,6 +60,7 @@ export default async function NewServicePage() {
               id="customerId"
               name="customerId"
               required
+              defaultValue={defaultCustomerId || ""}
               className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
             >
               <option value="">Select a customer...</option>

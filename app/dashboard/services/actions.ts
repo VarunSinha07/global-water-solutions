@@ -127,6 +127,32 @@ export async function updateService(serviceId: string, formData: FormData) {
       }
     }
 
+    let finalTechnicianId: string | null | undefined = undefined;
+    
+    if (formData.has("technicianName")) {
+      const technicianName = formData.get("technicianName") as string;
+      if (!technicianName || !technicianName.trim()) {
+        finalTechnicianId = null;
+      } else {
+        let tech = await prisma.user.findFirst({
+          where: { name: { equals: technicianName.trim(), mode: "insensitive" }, role: "TECHNICIAN" },
+        });
+        if (!tech) {
+          tech = await prisma.user.create({
+            data: {
+              name: technicianName.trim(),
+              email: `tech_${Date.now()}@water.local`,
+              role: "TECHNICIAN",
+            },
+          });
+        }
+        finalTechnicianId = tech.id;
+      }
+    } else if (formData.has("technicianId")) {
+      const fallbackId = formData.get("technicianId") as string;
+      finalTechnicianId = fallbackId || null;
+    }
+
     await prisma.service.update({
       where: { id: serviceId },
       data: {
@@ -137,6 +163,7 @@ export async function updateService(serviceId: string, formData: FormData) {
         paymentStatus: (paymentStatus as any) || null,
         status: (status as any) || undefined,
         amount: amount ? parseFloat(amount) : null,
+        technicianId: finalTechnicianId,
       },
     });
 

@@ -28,8 +28,14 @@ export default async function ServiceDetailsPage({
     where: { id: serviceId },
     include: {
       customer: true,
+      technician: true,
       amcContracts: true,
     },
+  });
+
+  const technicians = await prisma.user.findMany({
+    where: { role: "TECHNICIAN" },
+    select: { id: true, name: true },
   });
 
   if (!service) return notFound();
@@ -115,6 +121,14 @@ export default async function ServiceDetailsPage({
             </div>
             <div>
               <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
+                Technician
+              </p>
+              <p className="text-lg font-bold text-[#2e3458]">
+                {service.technician?.name || "Unassigned"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-1">
                 Status
               </p>
               <p className="text-lg font-bold text-[#2e3458]">
@@ -194,7 +208,7 @@ export default async function ServiceDetailsPage({
             </div>
           </div>
 
-          <EditServiceForm service={service} />
+          <EditServiceForm service={service} technicians={technicians} />
         </div>
       </div>
     </div>

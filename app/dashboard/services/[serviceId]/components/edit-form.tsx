@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Save, Calendar, CheckCircle } from "lucide-react";
 import { updateService } from "../../actions";
 
-export function EditServiceForm({ service }: { service: any }) {
+export function EditServiceForm({ service, technicians }: { service: any, technicians: any[] }) {
   const router = useRouter();
   const isCompleted = service.status === "COMPLETED";
 
@@ -44,6 +44,26 @@ export function EditServiceForm({ service }: { service: any }) {
             <option value="COMPLETED">Completed</option>
             <option value="CANCELLED">Cancelled</option>
           </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2 block">
+            Assigned Technician
+          </label>
+          <input
+            type="text"
+            name="technicianName"
+            list="technician-list"
+            defaultValue={service.technician?.name || ""}
+            disabled={isCompleted}
+            placeholder="Type technician name..."
+            className="w-full rounded-xl border-slate-200 bg-white/50 px-4 py-2.5 text-sm font-medium text-slate-700 shadow-sm focus:border-blue-500 focus:ring-blue-500 disabled:opacity-60 disabled:bg-slate-50 transition-all"
+          />
+          <datalist id="technician-list">
+            {technicians.map((tech) => (
+              <option key={tech.id} value={tech.name} />
+            ))}
+          </datalist>
         </div>
 
         <div>

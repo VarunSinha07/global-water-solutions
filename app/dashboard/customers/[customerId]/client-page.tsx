@@ -16,12 +16,6 @@ import {
   CreditCard,
 } from "lucide-react";
 import { useState } from "react";
-import {
-  AddServiceForm,
-  AddAMCForm,
-  AddComplaintForm,
-  AddPaymentForm,
-} from "./forms";
 import { cn } from "@/lib/utils";
 
 // Types matching the Prisma output
@@ -72,17 +66,6 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
   const [activeTab, setActiveTab] = useState<
     "services" | "payments" | "complaints"
   >("services");
-  const [showAddService, setShowAddService] = useState(false);
-  const [showAddAMC, setShowAddAMC] = useState(false);
-  const [showAddComplaint, setShowAddComplaint] = useState(false);
-  const [showAddPayment, setShowAddPayment] = useState(false);
-
-  const closeAllForms = () => {
-    setShowAddService(false);
-    setShowAddAMC(false);
-    setShowAddComplaint(false);
-    setShowAddPayment(false);
-  };
 
   return (
     <div className="space-y-6">
@@ -238,11 +221,8 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
               </h3>
             </div>
             <div className="space-y-2">
-              <button
-                onClick={() => {
-                  closeAllForms();
-                  setShowAddService(true);
-                }}
+              <Link
+                href={`/dashboard/services/new?customerId=${customer.id}`}
                 className="group w-full flex items-center justify-between px-4 py-3 rounded-xl border border-transparent bg-gray-50 text-sm font-medium text-gray-700 hover:bg-white hover:border-indigo-100 hover:shadow-sm hover:text-indigo-700 transition-all"
               >
                 <span className="flex items-center">
@@ -251,12 +231,9 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                   </div>
                   Add Service
                 </span>
-              </button>
-              <button
-                onClick={() => {
-                  closeAllForms();
-                  setShowAddAMC(true);
-                }}
+              </Link>
+              <Link
+                href={`/dashboard/amcs/new?customerId=${customer.id}`}
                 className="group w-full flex items-center justify-between px-4 py-3 rounded-xl border border-transparent bg-gray-50 text-sm font-medium text-gray-700 hover:bg-white hover:border-green-100 hover:shadow-sm hover:text-green-700 transition-all"
               >
                 <span className="flex items-center">
@@ -265,12 +242,9 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                   </div>
                   Create AMC
                 </span>
-              </button>
-              <button
-                onClick={() => {
-                  closeAllForms();
-                  setShowAddComplaint(true);
-                }}
+              </Link>
+              <Link
+                href={`/dashboard/complaints/new?customerId=${customer.id}`}
                 className="group w-full flex items-center justify-between px-4 py-3 rounded-xl border border-transparent bg-gray-50 text-sm font-medium text-gray-700 hover:bg-white hover:border-red-100 hover:shadow-sm hover:text-red-700 transition-all"
               >
                 <span className="flex items-center">
@@ -279,12 +253,9 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                   </div>
                   Log Complaint
                 </span>
-              </button>
-              <button
-                onClick={() => {
-                  closeAllForms();
-                  setShowAddPayment(true);
-                }}
+              </Link>
+              <Link
+                href={`/dashboard/payments/new?customerId=${customer.id}`}
                 className="group w-full flex items-center justify-between px-4 py-3 rounded-xl border border-transparent bg-gray-50 text-sm font-medium text-gray-700 hover:bg-white hover:border-gray-200 hover:shadow-sm hover:text-gray-900 transition-all"
               >
                 <span className="flex items-center">
@@ -293,41 +264,14 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                   </div>
                   Record Payment
                 </span>
-              </button>
+              </Link>
             </div>
           </div>
         </div>
 
         {/* Right Column: Dynamic Tabs */}
         <div className="lg:col-span-2 space-y-6">
-          {/* Inline Forms Area */}
-          {showAddService && (
-            <AddServiceForm customerId={customer.id} onClose={closeAllForms} />
-          )}
-
-          {showAddAMC && (
-            <AddAMCForm
-              customerId={customer.id}
-              services={customer.services || []}
-              onClose={closeAllForms}
-            />
-          )}
-
-          {showAddComplaint && (
-            <AddComplaintForm
-              customerId={customer.id}
-              services={customer.services || []}
-              onClose={closeAllForms}
-            />
-          )}
-
-          {showAddPayment && (
-            <AddPaymentForm
-              customerId={customer.id}
-              services={customer.services || []}
-              onClose={closeAllForms}
-            />
-          )}
+          {/* Inline Forms Removed */}
 
           <div className="rounded-xl border border-gray-200/60 bg-white shadow-sm overflow-hidden min-h-[500px] flex flex-col">
             <div className="border-b border-gray-100 bg-gray-50/50 px-6 pt-4">
@@ -412,16 +356,13 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                         Get started by adding a new service installation for
                         this customer.
                       </p>
-                      <button
-                        onClick={() => {
-                          closeAllForms();
-                          setShowAddService(true);
-                        }}
+                      <Link
+                        href={`/dashboard/services/new?customerId=${customer.id}`}
                         className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         <Plus className="mr-2 -ml-1 h-4 w-4" />
                         Add Service
-                      </button>
+                      </Link>
                     </div>
                   ) : (
                     customer.services.map((service: any) => (
@@ -440,12 +381,38 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                               </h4>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2 text-xs text-gray-500 bg-white px-2 py-1 rounded-md border border-gray-200 shadow-sm">
-                            <Clock className="h-3.5 w-3.5" />
-                            Installed:{" "}
-                            {new Date(
-                              service.installationDate,
-                            ).toLocaleDateString()}
+                          <span
+                            className={cn(
+                              "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ring-1 ring-inset",
+                              service.status === "COMPLETED"
+                                ? "bg-emerald-50 text-emerald-700 ring-emerald-600/20"
+                                : service.status === "IN_PROGRESS"
+                                  ? "bg-amber-50 text-amber-700 ring-amber-600/20"
+                                  : service.status === "CANCELLED"
+                                    ? "bg-slate-50 text-slate-700 ring-slate-600/20"
+                                    : "bg-red-50 text-red-700 ring-red-600/10"
+                            )}
+                          >
+                            {service.status ? service.status.replace("_", " ") : "PENDING"}
+                          </span>
+                        </div>
+
+                        <div className="p-5 border-b border-gray-100 bg-white grid grid-cols-2 gap-4 text-sm">
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Timeline</p>
+                            <p className="text-gray-900 flex items-center gap-1.5 mt-1"><Clock className="h-3.5 w-3.5 text-gray-400" /> Reg: {new Date(service.serviceRegisterDate).toLocaleDateString()}</p>
+                            {service.serviceCompleteDate && (
+                              <p className="text-gray-900 flex items-center gap-1.5 mt-1"><CheckCircle className="h-3.5 w-3.5 text-emerald-500" /> Done: {new Date(service.serviceCompleteDate).toLocaleDateString()}</p>
+                            )}
+                          </div>
+                          <div>
+                            <p className="text-xs text-gray-500 uppercase tracking-wider font-semibold mb-1">Details</p>
+                            <p className="text-gray-900 flex items-center gap-1.5 mt-1">
+                              <User className="h-3.5 w-3.5 text-gray-400" /> {service.technician?.name || <span className="text-gray-400 italic">Unassigned</span>}
+                            </p>
+                            <p className="text-gray-900 flex items-center gap-1.5 mt-1">
+                              <CreditCard className="h-3.5 w-3.5 text-gray-400" /> {service.paymentStatus || "UNPAID"} {service.amount ? `(₹${service.amount})` : ""}
+                            </p>
                           </div>
                         </div>
 
@@ -457,15 +424,12 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                           {service.amcContracts.length === 0 ? (
                             <div className="text-sm text-gray-500 bg-gray-50 rounded-lg p-4 text-center border border-gray-100">
                               No active AMC contracts.
-                              <button
+                              <Link
+                                href={`/dashboard/amcs/new?customerId=${customer.id}`}
                                 className="ml-2 text-indigo-600 font-medium hover:underline"
-                                onClick={() => {
-                                  closeAllForms();
-                                  setShowAddAMC(true);
-                                }}
                               >
                                 Create One
-                              </button>
+                              </Link>
                             </div>
                           ) : (
                             <div className="space-y-3">
@@ -533,16 +497,13 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                       <p className="text-sm text-gray-500 mt-1">
                         Record a payment to see it listed here.
                       </p>
-                      <button
-                        onClick={() => {
-                          closeAllForms();
-                          setShowAddPayment(true);
-                        }}
+                      <Link
+                        href={`/dashboard/payments/new?customerId=${customer.id}`}
                         className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                       >
                         <CreditCard className="mr-2 -ml-1 h-4 w-4" />
                         Record Payment
-                      </button>
+                      </Link>
                     </div>
                   ) : (
                     customer.payments.map((payment: any) => (
@@ -601,16 +562,13 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                       <p className="text-sm text-gray-500 mt-1">
                         Everything seems to be running smoothly!
                       </p>
-                      <button
-                        onClick={() => {
-                          closeAllForms();
-                          setShowAddComplaint(true);
-                        }}
+                      <Link
+                        href={`/dashboard/complaints/new?customerId=${customer.id}`}
                         className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
                       >
                         <AlertCircle className="mr-2 -ml-1 h-4 w-4" />
                         Log Complaint
-                      </button>
+                      </Link>
                     </div>
                   ) : (
                     customer.complaints.map((complaint: any) => (

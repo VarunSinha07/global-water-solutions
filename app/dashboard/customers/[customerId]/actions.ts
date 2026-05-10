@@ -12,6 +12,9 @@ export async function getCustomerDetails(customerId: string) {
       services: {
         include: {
           amcContracts: true,
+          technician: {
+            select: { name: true },
+          },
           complaints: {
             where: { status: { not: "RESOLVED" } }, // Open complaints count/preview
           },
