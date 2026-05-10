@@ -74,7 +74,6 @@ export async function getCustomers(query?: string, sort?: string) {
           OR: [
             { name: { contains: query, mode: "insensitive" } },
             { phone: { contains: query, mode: "insensitive" } },
-            { email: { contains: query, mode: "insensitive" } },
             { address: { contains: query, mode: "insensitive" } },
           ],
         }

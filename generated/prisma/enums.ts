@@ -42,3 +42,20 @@ export const FinanceType = {
 } as const
 
 export type FinanceType = (typeof FinanceType)[keyof typeof FinanceType]
+
+
+export const PlantCategory = {
+  DOMESTIC: 'DOMESTIC',
+  INDUSTRIAL: 'INDUSTRIAL',
+  WATER_TREATMENT: 'WATER_TREATMENT'
+} as const
+
+export type PlantCategory = (typeof PlantCategory)[keyof typeof PlantCategory]
+
+
+export const ServicePaymentStatus = {
+  PAID: 'PAID',
+  UNPAID: 'UNPAID'
+} as const
+
+export type ServicePaymentStatus = (typeof ServicePaymentStatus)[keyof typeof ServicePaymentStatus]

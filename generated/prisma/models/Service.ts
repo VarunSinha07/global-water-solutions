@@ -20,14 +20,28 @@ export type ServiceModel = runtime.Types.Result.DefaultSelection<Prisma.$Service
 
 export type AggregateService = {
   _count: ServiceCountAggregateOutputType | null
+  _avg: ServiceAvgAggregateOutputType | null
+  _sum: ServiceSumAggregateOutputType | null
   _min: ServiceMinAggregateOutputType | null
   _max: ServiceMaxAggregateOutputType | null
+}
+
+export type ServiceAvgAggregateOutputType = {
+  amount: number | null
+}
+
+export type ServiceSumAggregateOutputType = {
+  amount: number | null
 }
 
 export type ServiceMinAggregateOutputType = {
   id: string | null
   customerId: string | null
   serviceType: string | null
+  plantCategory: $Enums.PlantCategory | null
+  paymentMode: string | null
+  amount: number | null
+  paymentStatus: $Enums.ServicePaymentStatus | null
   serviceRegisterDate: Date | null
   serviceCompleteDate: Date | null
   nextServiceDueDate: Date | null
@@ -37,6 +51,10 @@ export type ServiceMaxAggregateOutputType = {
   id: string | null
   customerId: string | null
   serviceType: string | null
+  plantCategory: $Enums.PlantCategory | null
+  paymentMode: string | null
+  amount: number | null
+  paymentStatus: $Enums.ServicePaymentStatus | null
   serviceRegisterDate: Date | null
   serviceCompleteDate: Date | null
   nextServiceDueDate: Date | null
@@ -46,6 +64,10 @@ export type ServiceCountAggregateOutputType = {
   id: number
   customerId: number
   serviceType: number
+  plantCategory: number
+  paymentMode: number
+  amount: number
+  paymentStatus: number
   serviceRegisterDate: number
   serviceCompleteDate: number
   nextServiceDueDate: number
@@ -53,10 +75,22 @@ export type ServiceCountAggregateOutputType = {
 }
 
 
+export type ServiceAvgAggregateInputType = {
+  amount?: true
+}
+
+export type ServiceSumAggregateInputType = {
+  amount?: true
+}
+
 export type ServiceMinAggregateInputType = {
   id?: true
   customerId?: true
   serviceType?: true
+  plantCategory?: true
+  paymentMode?: true
+  amount?: true
+  paymentStatus?: true
   serviceRegisterDate?: true
   serviceCompleteDate?: true
   nextServiceDueDate?: true
@@ -66,6 +100,10 @@ export type ServiceMaxAggregateInputType = {
   id?: true
   customerId?: true
   serviceType?: true
+  plantCategory?: true
+  paymentMode?: true
+  amount?: true
+  paymentStatus?: true
   serviceRegisterDate?: true
   serviceCompleteDate?: true
   nextServiceDueDate?: true
@@ -75,6 +113,10 @@ export type ServiceCountAggregateInputType = {
   id?: true
   customerId?: true
   serviceType?: true
+  plantCategory?: true
+  paymentMode?: true
+  amount?: true
+  paymentStatus?: true
   serviceRegisterDate?: true
   serviceCompleteDate?: true
   nextServiceDueDate?: true
@@ -119,6 +161,18 @@ export type ServiceAggregateArgs<ExtArgs extends runtime.Types.Extensions.Intern
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: ServiceAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: ServiceSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: ServiceMinAggregateInputType
@@ -149,6 +203,8 @@ export type ServiceGroupByArgs<ExtArgs extends runtime.Types.Extensions.Internal
   take?: number
   skip?: number
   _count?: ServiceCountAggregateInputType | true
+  _avg?: ServiceAvgAggregateInputType
+  _sum?: ServiceSumAggregateInputType
   _min?: ServiceMinAggregateInputType
   _max?: ServiceMaxAggregateInputType
 }
@@ -157,10 +213,16 @@ export type ServiceGroupByOutputType = {
   id: string
   customerId: string
   serviceType: string
+  plantCategory: $Enums.PlantCategory | null
+  paymentMode: string | null
+  amount: number | null
+  paymentStatus: $Enums.ServicePaymentStatus | null
   serviceRegisterDate: Date
   serviceCompleteDate: Date | null
   nextServiceDueDate: Date
   _count: ServiceCountAggregateOutputType | null
+  _avg: ServiceAvgAggregateOutputType | null
+  _sum: ServiceSumAggregateOutputType | null
   _min: ServiceMinAggregateOutputType | null
   _max: ServiceMaxAggregateOutputType | null
 }
@@ -187,6 +249,10 @@ export type ServiceWhereInput = {
   id?: Prisma.StringFilter<"Service"> | string
   customerId?: Prisma.StringFilter<"Service"> | string
   serviceType?: Prisma.StringFilter<"Service"> | string
+  plantCategory?: Prisma.EnumPlantCategoryNullableFilter<"Service"> | $Enums.PlantCategory | null
+  paymentMode?: Prisma.StringNullableFilter<"Service"> | string | null
+  amount?: Prisma.FloatNullableFilter<"Service"> | number | null
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Service"> | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFilter<"Service"> | Date | string
   serviceCompleteDate?: Prisma.DateTimeNullableFilter<"Service"> | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFilter<"Service"> | Date | string
@@ -199,6 +265,10 @@ export type ServiceOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   serviceType?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentMode?: Prisma.SortOrderInput | Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrderInput | Prisma.SortOrder
   nextServiceDueDate?: Prisma.SortOrder
@@ -214,6 +284,10 @@ export type ServiceWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ServiceWhereInput | Prisma.ServiceWhereInput[]
   customerId?: Prisma.StringFilter<"Service"> | string
   serviceType?: Prisma.StringFilter<"Service"> | string
+  plantCategory?: Prisma.EnumPlantCategoryNullableFilter<"Service"> | $Enums.PlantCategory | null
+  paymentMode?: Prisma.StringNullableFilter<"Service"> | string | null
+  amount?: Prisma.FloatNullableFilter<"Service"> | number | null
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Service"> | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFilter<"Service"> | Date | string
   serviceCompleteDate?: Prisma.DateTimeNullableFilter<"Service"> | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFilter<"Service"> | Date | string
@@ -226,12 +300,18 @@ export type ServiceOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   serviceType?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentMode?: Prisma.SortOrderInput | Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrderInput | Prisma.SortOrder
   nextServiceDueDate?: Prisma.SortOrder
   _count?: Prisma.ServiceCountOrderByAggregateInput
+  _avg?: Prisma.ServiceAvgOrderByAggregateInput
   _max?: Prisma.ServiceMaxOrderByAggregateInput
   _min?: Prisma.ServiceMinOrderByAggregateInput
+  _sum?: Prisma.ServiceSumOrderByAggregateInput
 }
 
 export type ServiceScalarWhereWithAggregatesInput = {
@@ -241,6 +321,10 @@ export type ServiceScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Service"> | string
   customerId?: Prisma.StringWithAggregatesFilter<"Service"> | string
   serviceType?: Prisma.StringWithAggregatesFilter<"Service"> | string
+  plantCategory?: Prisma.EnumPlantCategoryNullableWithAggregatesFilter<"Service"> | $Enums.PlantCategory | null
+  paymentMode?: Prisma.StringNullableWithAggregatesFilter<"Service"> | string | null
+  amount?: Prisma.FloatNullableWithAggregatesFilter<"Service"> | number | null
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableWithAggregatesFilter<"Service"> | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
   serviceCompleteDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Service"> | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeWithAggregatesFilter<"Service"> | Date | string
@@ -249,6 +333,10 @@ export type ServiceScalarWhereWithAggregatesInput = {
 export type ServiceCreateInput = {
   id?: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -261,6 +349,10 @@ export type ServiceUncheckedCreateInput = {
   id?: string
   customerId: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -271,6 +363,10 @@ export type ServiceUncheckedCreateInput = {
 export type ServiceUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -283,6 +379,10 @@ export type ServiceUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -294,6 +394,10 @@ export type ServiceCreateManyInput = {
   id?: string
   customerId: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -302,6 +406,10 @@ export type ServiceCreateManyInput = {
 export type ServiceUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -311,6 +419,10 @@ export type ServiceUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -330,15 +442,27 @@ export type ServiceCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   serviceType?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrder
+  paymentMode?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrder
   nextServiceDueDate?: Prisma.SortOrder
+}
+
+export type ServiceAvgOrderByAggregateInput = {
+  amount?: Prisma.SortOrder
 }
 
 export type ServiceMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   serviceType?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrder
+  paymentMode?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrder
   nextServiceDueDate?: Prisma.SortOrder
@@ -348,9 +472,17 @@ export type ServiceMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   customerId?: Prisma.SortOrder
   serviceType?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrder
+  paymentMode?: Prisma.SortOrder
+  amount?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   serviceRegisterDate?: Prisma.SortOrder
   serviceCompleteDate?: Prisma.SortOrder
   nextServiceDueDate?: Prisma.SortOrder
+}
+
+export type ServiceSumOrderByAggregateInput = {
+  amount?: Prisma.SortOrder
 }
 
 export type ServiceScalarRelationFilter = {
@@ -400,6 +532,22 @@ export type ServiceUncheckedUpdateManyWithoutCustomerNestedInput = {
   deleteMany?: Prisma.ServiceScalarWhereInput | Prisma.ServiceScalarWhereInput[]
 }
 
+export type NullableEnumPlantCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.PlantCategory | null
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableEnumServicePaymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ServicePaymentStatus | null
+}
+
 export type ServiceCreateNestedOneWithoutAmcContractsInput = {
   create?: Prisma.XOR<Prisma.ServiceCreateWithoutAmcContractsInput, Prisma.ServiceUncheckedCreateWithoutAmcContractsInput>
   connectOrCreate?: Prisma.ServiceCreateOrConnectWithoutAmcContractsInput
@@ -431,6 +579,10 @@ export type ServiceUpdateOneRequiredWithoutComplaintsNestedInput = {
 export type ServiceCreateWithoutCustomerInput = {
   id?: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -441,6 +593,10 @@ export type ServiceCreateWithoutCustomerInput = {
 export type ServiceUncheckedCreateWithoutCustomerInput = {
   id?: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -481,6 +637,10 @@ export type ServiceScalarWhereInput = {
   id?: Prisma.StringFilter<"Service"> | string
   customerId?: Prisma.StringFilter<"Service"> | string
   serviceType?: Prisma.StringFilter<"Service"> | string
+  plantCategory?: Prisma.EnumPlantCategoryNullableFilter<"Service"> | $Enums.PlantCategory | null
+  paymentMode?: Prisma.StringNullableFilter<"Service"> | string | null
+  amount?: Prisma.FloatNullableFilter<"Service"> | number | null
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Service"> | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFilter<"Service"> | Date | string
   serviceCompleteDate?: Prisma.DateTimeNullableFilter<"Service"> | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFilter<"Service"> | Date | string
@@ -489,6 +649,10 @@ export type ServiceScalarWhereInput = {
 export type ServiceCreateWithoutAmcContractsInput = {
   id?: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -500,6 +664,10 @@ export type ServiceUncheckedCreateWithoutAmcContractsInput = {
   id?: string
   customerId: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -525,6 +693,10 @@ export type ServiceUpdateToOneWithWhereWithoutAmcContractsInput = {
 export type ServiceUpdateWithoutAmcContractsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -536,6 +708,10 @@ export type ServiceUncheckedUpdateWithoutAmcContractsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -545,6 +721,10 @@ export type ServiceUncheckedUpdateWithoutAmcContractsInput = {
 export type ServiceCreateWithoutComplaintsInput = {
   id?: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -556,6 +736,10 @@ export type ServiceUncheckedCreateWithoutComplaintsInput = {
   id?: string
   customerId: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -581,6 +765,10 @@ export type ServiceUpdateToOneWithWhereWithoutComplaintsInput = {
 export type ServiceUpdateWithoutComplaintsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -592,6 +780,10 @@ export type ServiceUncheckedUpdateWithoutComplaintsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   customerId?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -601,6 +793,10 @@ export type ServiceUncheckedUpdateWithoutComplaintsInput = {
 export type ServiceCreateManyCustomerInput = {
   id?: string
   serviceType: string
+  plantCategory?: $Enums.PlantCategory | null
+  paymentMode?: string | null
+  amount?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Date | string
   serviceCompleteDate?: Date | string | null
   nextServiceDueDate?: Date | string
@@ -609,6 +805,10 @@ export type ServiceCreateManyCustomerInput = {
 export type ServiceUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -619,6 +819,10 @@ export type ServiceUpdateWithoutCustomerInput = {
 export type ServiceUncheckedUpdateWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -629,6 +833,10 @@ export type ServiceUncheckedUpdateWithoutCustomerInput = {
 export type ServiceUncheckedUpdateManyWithoutCustomerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   serviceType?: Prisma.StringFieldUpdateOperationsInput | string
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  amount?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   serviceRegisterDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   serviceCompleteDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   nextServiceDueDate?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -678,6 +886,10 @@ export type ServiceSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs 
   id?: boolean
   customerId?: boolean
   serviceType?: boolean
+  plantCategory?: boolean
+  paymentMode?: boolean
+  amount?: boolean
+  paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
@@ -691,6 +903,10 @@ export type ServiceSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   customerId?: boolean
   serviceType?: boolean
+  plantCategory?: boolean
+  paymentMode?: boolean
+  amount?: boolean
+  paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
@@ -701,6 +917,10 @@ export type ServiceSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exten
   id?: boolean
   customerId?: boolean
   serviceType?: boolean
+  plantCategory?: boolean
+  paymentMode?: boolean
+  amount?: boolean
+  paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
@@ -711,12 +931,16 @@ export type ServiceSelectScalar = {
   id?: boolean
   customerId?: boolean
   serviceType?: boolean
+  plantCategory?: boolean
+  paymentMode?: boolean
+  amount?: boolean
+  paymentStatus?: boolean
   serviceRegisterDate?: boolean
   serviceCompleteDate?: boolean
   nextServiceDueDate?: boolean
 }
 
-export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "serviceType" | "serviceRegisterDate" | "serviceCompleteDate" | "nextServiceDueDate", ExtArgs["result"]["service"]>
+export type ServiceOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "customerId" | "serviceType" | "plantCategory" | "paymentMode" | "amount" | "paymentStatus" | "serviceRegisterDate" | "serviceCompleteDate" | "nextServiceDueDate", ExtArgs["result"]["service"]>
 export type ServiceInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   customer?: boolean | Prisma.CustomerDefaultArgs<ExtArgs>
   complaints?: boolean | Prisma.Service$complaintsArgs<ExtArgs>
@@ -741,6 +965,10 @@ export type $ServicePayload<ExtArgs extends runtime.Types.Extensions.InternalArg
     id: string
     customerId: string
     serviceType: string
+    plantCategory: $Enums.PlantCategory | null
+    paymentMode: string | null
+    amount: number | null
+    paymentStatus: $Enums.ServicePaymentStatus | null
     serviceRegisterDate: Date
     serviceCompleteDate: Date | null
     nextServiceDueDate: Date
@@ -1173,6 +1401,10 @@ export interface ServiceFieldRefs {
   readonly id: Prisma.FieldRef<"Service", 'String'>
   readonly customerId: Prisma.FieldRef<"Service", 'String'>
   readonly serviceType: Prisma.FieldRef<"Service", 'String'>
+  readonly plantCategory: Prisma.FieldRef<"Service", 'PlantCategory'>
+  readonly paymentMode: Prisma.FieldRef<"Service", 'String'>
+  readonly amount: Prisma.FieldRef<"Service", 'Float'>
+  readonly paymentStatus: Prisma.FieldRef<"Service", 'ServicePaymentStatus'>
   readonly serviceRegisterDate: Prisma.FieldRef<"Service", 'DateTime'>
   readonly serviceCompleteDate: Prisma.FieldRef<"Service", 'DateTime'>
   readonly nextServiceDueDate: Prisma.FieldRef<"Service", 'DateTime'>

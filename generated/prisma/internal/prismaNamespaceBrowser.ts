@@ -159,6 +159,10 @@ export const ServiceScalarFieldEnum = {
   id: 'id',
   customerId: 'customerId',
   serviceType: 'serviceType',
+  plantCategory: 'plantCategory',
+  paymentMode: 'paymentMode',
+  amount: 'amount',
+  paymentStatus: 'paymentStatus',
   serviceRegisterDate: 'serviceRegisterDate',
   serviceCompleteDate: 'serviceCompleteDate',
   nextServiceDueDate: 'nextServiceDueDate'

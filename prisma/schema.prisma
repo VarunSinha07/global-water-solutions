@@ -38,6 +38,17 @@ enum FinanceType {
   EXPENSE
 }
 
+enum PlantCategory {
+  DOMESTIC
+  INDUSTRIAL
+  WATER_TREATMENT
+}
+
+enum ServicePaymentStatus {
+  PAID
+  UNPAID
+}
+
 
 model User {
   id            String    @id @default(cuid())
@@ -125,12 +136,16 @@ model Customer {
 }
 
 model Service {
-  id                   String    @id @default(uuid())
+  id                   String                @id @default(uuid())
   customerId           String
   serviceType          String
-  serviceRegisterDate  DateTime  @default(now())
+  plantCategory        PlantCategory?
+  paymentMode          String?
+  amount               Float?
+  paymentStatus        ServicePaymentStatus?
+  serviceRegisterDate  DateTime              @default(now())
   serviceCompleteDate  DateTime?
-  nextServiceDueDate   DateTime  @default(dbgenerated("now() + interval '3 months'"))
+  nextServiceDueDate   DateTime              @default(dbgenerated("now() + interval '3 months'"))
 
   customer     Customer      @relation(fields: [customerId], references: [id])
   complaints   Complaint[]

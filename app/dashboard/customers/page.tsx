@@ -87,7 +87,7 @@ export default async function CustomersPage({
           </div>
           {/* Wrap SearchInput — pl-10 pushes text past the icon */}
           <div className="[&_input]:pl-10 [&_input]:rounded-xl [&_input]:border-slate-200 [&_input]:bg-white [&_input]:text-sm [&_input]:shadow-sm [&_input]:ring-1 [&_input]:ring-slate-200 [&_input:focus]:ring-2 [&_input:focus]:ring-indigo-400 [&_input:focus]:border-indigo-400 [&_input:focus]:outline-none">
-            <SearchInput placeholder="Search name, phone or email…" />
+            <SearchInput placeholder="Search name or phone…" />
           </div>
         </div>
 

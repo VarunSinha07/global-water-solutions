@@ -84,6 +84,85 @@ export default async function NewServicePage() {
             />
           </div>
 
+          <div className="space-y-2">
+            <label
+              htmlFor="plantCategory"
+              className="text-sm font-semibold text-gray-700"
+            >
+              Plant Category
+            </label>
+            <select
+              id="plantCategory"
+              name="plantCategory"
+              className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+            >
+              <option value="">Select plant category...</option>
+              <option value="DOMESTIC">Domestic Plant</option>
+              <option value="INDUSTRIAL">Industrial Plant</option>
+              <option value="WATER_TREATMENT">Water Treatment Plant</option>
+            </select>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3">
+            <div className="space-y-2">
+              <label
+                htmlFor="paymentMode"
+                className="text-sm font-semibold text-gray-700"
+              >
+                Payment Mode
+              </label>
+              <input
+                id="paymentMode"
+                name="paymentMode"
+                type="text"
+                placeholder="Ex. Cash, UPI, Card"
+                className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label
+                htmlFor="amount"
+                className="text-sm font-semibold text-gray-700"
+              >
+                Amount to be Paid
+              </label>
+              <input
+                id="amount"
+                name="amount"
+                type="number"
+                step="0.01"
+                min="0"
+                placeholder="₹ 0.00"
+                className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-semibold text-gray-700">
+                Payment Status
+              </label>
+              <div className="flex items-center gap-6 pt-2">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="paymentStatus"
+                    value="PAID"
+                    className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                  />
+                  <span className="text-sm font-medium text-green-600">Paid</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="radio"
+                    name="paymentStatus"
+                    value="UNPAID"
+                    className="w-4 h-4 text-indigo-600 border-gray-300 focus:ring-indigo-500"
+                  />
+                  <span className="text-sm font-medium text-red-500">Unpaid</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
           <div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <label
