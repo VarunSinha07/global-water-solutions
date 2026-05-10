@@ -1336,6 +1336,11 @@ export const CustomerScalarFieldEnum = {
   installationDate: 'installationDate',
   warrantyPeriod: 'warrantyPeriod',
   plantModelName: 'plantModelName',
+  plantCategory: 'plantCategory',
+  plantCost: 'plantCost',
+  paymentMode: 'paymentMode',
+  emi: 'emi',
+  paymentStatus: 'paymentStatus',
   createdAt: 'createdAt'
 } as const
 
@@ -1344,11 +1349,14 @@ export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typ
 
 export const ServiceScalarFieldEnum = {
   id: 'id',
+  serviceNumber: 'serviceNumber',
   customerId: 'customerId',
   serviceType: 'serviceType',
   plantCategory: 'plantCategory',
   paymentMode: 'paymentMode',
   amount: 'amount',
+  status: 'status',
+  technicianId: 'technicianId',
   paymentStatus: 'paymentStatus',
   serviceRegisterDate: 'serviceRegisterDate',
   serviceCompleteDate: 'serviceCompleteDate',
@@ -1518,6 +1526,20 @@ export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaMode
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
  * Reference to a field of type 'ServicePaymentStatus'
  */
 export type EnumServicePaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServicePaymentStatus'>
@@ -1528,6 +1550,20 @@ export type EnumServicePaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputT
  * Reference to a field of type 'ServicePaymentStatus[]'
  */
 export type ListEnumServicePaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServicePaymentStatus[]'>
+    
+
+
+/**
+ * Reference to a field of type 'ServiceStatus'
+ */
+export type EnumServiceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServiceStatus'>
+    
+
+
+/**
+ * Reference to a field of type 'ServiceStatus[]'
+ */
+export type ListEnumServiceStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ServiceStatus[]'>
     
 
 
@@ -1584,20 +1620,6 @@ export type EnumFinanceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$Pris
  * Reference to a field of type 'FinanceType[]'
  */
 export type ListEnumFinanceTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'FinanceType[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 /**

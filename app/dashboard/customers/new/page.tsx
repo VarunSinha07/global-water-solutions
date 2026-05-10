@@ -223,6 +223,134 @@ export default function NewCustomerPage() {
                 </p>
               )}
             </div>
+
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <label
+                htmlFor="plantCategory"
+                className="text-sm font-semibold text-gray-700"
+              >
+                Plant Category
+              </label>
+              <select
+                id="plantCategory"
+                name="plantCategory"
+                className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none"
+              >
+                <option value="">Select Category</option>
+                <option value="DOMESTIC">Domestic Plant</option>
+                <option value="INDUSTRIAL">Industrial Plant</option>
+                <option value="WATER_TREATMENT">Water Treatment Plant</option>
+              </select>
+              {state?.error?.plantCategory && (
+                <p className="text-sm text-red-500 flex items-center mt-1">
+                  <span className="w-1 h-1 rounded-full bg-red-500 mr-2"></span>
+                  {state.error.plantCategory[0]}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <label
+                htmlFor="plantCost"
+                className="text-sm font-semibold text-gray-700"
+              >
+                Plant Cost
+              </label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-4 text-gray-500 font-medium">
+                  Rs.
+                </span>
+                <input
+                  id="plantCost"
+                  name="plantCost"
+                  type="number"
+                  min="0"
+                  placeholder="10000"
+                  className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 pl-10 px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all"
+                />
+              </div>
+              {state?.error?.plantCost && (
+                <p className="text-sm text-red-500 flex items-center mt-1">
+                  <span className="w-1 h-1 rounded-full bg-red-500 mr-2"></span>
+                  {state.error.plantCost[0]}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <label
+                htmlFor="paymentMode"
+                className="text-sm font-semibold text-gray-700"
+              >
+                Payment Mode
+              </label>
+              <select
+                id="paymentMode"
+                name="paymentMode"
+                className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none"
+              >
+                <option value="">Select Mode</option>
+                <option value="Gpay">Gpay</option>
+                <option value="Cash">Cash</option>
+                <option value="Account">Account</option>
+              </select>
+              {state?.error?.paymentMode && (
+                <p className="text-sm text-red-500 flex items-center mt-1">
+                  <span className="w-1 h-1 rounded-full bg-red-500 mr-2"></span>
+                  {state.error.paymentMode[0]}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <label
+                htmlFor="emi"
+                className="text-sm font-semibold text-gray-700"
+              >
+                EMI Iterations
+              </label>
+              <select
+                id="emi"
+                name="emi"
+                className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none"
+              >
+                <option value="">Select EMI</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+              </select>
+              {state?.error?.emi && (
+                <p className="text-sm text-red-500 flex items-center mt-1">
+                  <span className="w-1 h-1 rounded-full bg-red-500 mr-2"></span>
+                  {state.error.emi[0]}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2 col-span-2 md:col-span-1">
+              <label
+                htmlFor="paymentStatus"
+                className="text-sm font-semibold text-gray-700"
+              >
+                Payment Status
+              </label>
+              <select
+                id="paymentStatus"
+                name="paymentStatus"
+                className="block w-full rounded-xl border-gray-200 bg-gray-50/50 py-3 px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-indigo-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-indigo-500/10 transition-all appearance-none"
+              >
+                <option value="">Select Status</option>
+                <option value="PAID">Paid</option>
+                <option value="UNPAID">Unpaid</option>
+              </select>
+              {state?.error?.paymentStatus && (
+                <p className="text-sm text-red-500 flex items-center mt-1">
+                  <span className="w-1 h-1 rounded-full bg-red-500 mr-2"></span>
+                  {state.error.paymentStatus[0]}
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="flex justify-end pt-6 border-t border-gray-100/50">

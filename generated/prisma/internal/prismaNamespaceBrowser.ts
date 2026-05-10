@@ -149,6 +149,11 @@ export const CustomerScalarFieldEnum = {
   installationDate: 'installationDate',
   warrantyPeriod: 'warrantyPeriod',
   plantModelName: 'plantModelName',
+  plantCategory: 'plantCategory',
+  plantCost: 'plantCost',
+  paymentMode: 'paymentMode',
+  emi: 'emi',
+  paymentStatus: 'paymentStatus',
   createdAt: 'createdAt'
 } as const
 
@@ -157,11 +162,14 @@ export type CustomerScalarFieldEnum = (typeof CustomerScalarFieldEnum)[keyof typ
 
 export const ServiceScalarFieldEnum = {
   id: 'id',
+  serviceNumber: 'serviceNumber',
   customerId: 'customerId',
   serviceType: 'serviceType',
   plantCategory: 'plantCategory',
   paymentMode: 'paymentMode',
   amount: 'amount',
+  status: 'status',
+  technicianId: 'technicianId',
   paymentStatus: 'paymentStatus',
   serviceRegisterDate: 'serviceRegisterDate',
   serviceCompleteDate: 'serviceCompleteDate',

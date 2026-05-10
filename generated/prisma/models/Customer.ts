@@ -20,8 +20,20 @@ export type CustomerModel = runtime.Types.Result.DefaultSelection<Prisma.$Custom
 
 export type AggregateCustomer = {
   _count: CustomerCountAggregateOutputType | null
+  _avg: CustomerAvgAggregateOutputType | null
+  _sum: CustomerSumAggregateOutputType | null
   _min: CustomerMinAggregateOutputType | null
   _max: CustomerMaxAggregateOutputType | null
+}
+
+export type CustomerAvgAggregateOutputType = {
+  plantCost: number | null
+  emi: number | null
+}
+
+export type CustomerSumAggregateOutputType = {
+  plantCost: number | null
+  emi: number | null
 }
 
 export type CustomerMinAggregateOutputType = {
@@ -33,6 +45,11 @@ export type CustomerMinAggregateOutputType = {
   installationDate: Date | null
   warrantyPeriod: string | null
   plantModelName: string | null
+  plantCategory: $Enums.PlantCategory | null
+  plantCost: number | null
+  paymentMode: string | null
+  emi: number | null
+  paymentStatus: $Enums.ServicePaymentStatus | null
   createdAt: Date | null
 }
 
@@ -45,6 +62,11 @@ export type CustomerMaxAggregateOutputType = {
   installationDate: Date | null
   warrantyPeriod: string | null
   plantModelName: string | null
+  plantCategory: $Enums.PlantCategory | null
+  plantCost: number | null
+  paymentMode: string | null
+  emi: number | null
+  paymentStatus: $Enums.ServicePaymentStatus | null
   createdAt: Date | null
 }
 
@@ -57,10 +79,25 @@ export type CustomerCountAggregateOutputType = {
   installationDate: number
   warrantyPeriod: number
   plantModelName: number
+  plantCategory: number
+  plantCost: number
+  paymentMode: number
+  emi: number
+  paymentStatus: number
   createdAt: number
   _all: number
 }
 
+
+export type CustomerAvgAggregateInputType = {
+  plantCost?: true
+  emi?: true
+}
+
+export type CustomerSumAggregateInputType = {
+  plantCost?: true
+  emi?: true
+}
 
 export type CustomerMinAggregateInputType = {
   id?: true
@@ -71,6 +108,11 @@ export type CustomerMinAggregateInputType = {
   installationDate?: true
   warrantyPeriod?: true
   plantModelName?: true
+  plantCategory?: true
+  plantCost?: true
+  paymentMode?: true
+  emi?: true
+  paymentStatus?: true
   createdAt?: true
 }
 
@@ -83,6 +125,11 @@ export type CustomerMaxAggregateInputType = {
   installationDate?: true
   warrantyPeriod?: true
   plantModelName?: true
+  plantCategory?: true
+  plantCost?: true
+  paymentMode?: true
+  emi?: true
+  paymentStatus?: true
   createdAt?: true
 }
 
@@ -95,6 +142,11 @@ export type CustomerCountAggregateInputType = {
   installationDate?: true
   warrantyPeriod?: true
   plantModelName?: true
+  plantCategory?: true
+  plantCost?: true
+  paymentMode?: true
+  emi?: true
+  paymentStatus?: true
   createdAt?: true
   _all?: true
 }
@@ -137,6 +189,18 @@ export type CustomerAggregateArgs<ExtArgs extends runtime.Types.Extensions.Inter
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: CustomerAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: CustomerSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: CustomerMinAggregateInputType
@@ -167,6 +231,8 @@ export type CustomerGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
   take?: number
   skip?: number
   _count?: CustomerCountAggregateInputType | true
+  _avg?: CustomerAvgAggregateInputType
+  _sum?: CustomerSumAggregateInputType
   _min?: CustomerMinAggregateInputType
   _max?: CustomerMaxAggregateInputType
 }
@@ -180,8 +246,15 @@ export type CustomerGroupByOutputType = {
   installationDate: Date | null
   warrantyPeriod: string | null
   plantModelName: string | null
+  plantCategory: $Enums.PlantCategory | null
+  plantCost: number | null
+  paymentMode: string | null
+  emi: number | null
+  paymentStatus: $Enums.ServicePaymentStatus | null
   createdAt: Date
   _count: CustomerCountAggregateOutputType | null
+  _avg: CustomerAvgAggregateOutputType | null
+  _sum: CustomerSumAggregateOutputType | null
   _min: CustomerMinAggregateOutputType | null
   _max: CustomerMaxAggregateOutputType | null
 }
@@ -213,6 +286,11 @@ export type CustomerWhereInput = {
   installationDate?: Prisma.DateTimeNullableFilter<"Customer"> | Date | string | null
   warrantyPeriod?: Prisma.StringNullableFilter<"Customer"> | string | null
   plantModelName?: Prisma.StringNullableFilter<"Customer"> | string | null
+  plantCategory?: Prisma.EnumPlantCategoryNullableFilter<"Customer"> | $Enums.PlantCategory | null
+  plantCost?: Prisma.FloatNullableFilter<"Customer"> | number | null
+  paymentMode?: Prisma.StringNullableFilter<"Customer"> | string | null
+  emi?: Prisma.IntNullableFilter<"Customer"> | number | null
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Customer"> | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
   services?: Prisma.ServiceListRelationFilter
   amcs?: Prisma.AMCContractListRelationFilter
@@ -229,6 +307,11 @@ export type CustomerOrderByWithRelationInput = {
   installationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   warrantyPeriod?: Prisma.SortOrderInput | Prisma.SortOrder
   plantModelName?: Prisma.SortOrderInput | Prisma.SortOrder
+  plantCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  plantCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentMode?: Prisma.SortOrderInput | Prisma.SortOrder
+  emi?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   services?: Prisma.ServiceOrderByRelationAggregateInput
   amcs?: Prisma.AMCContractOrderByRelationAggregateInput
@@ -248,6 +331,11 @@ export type CustomerWhereUniqueInput = Prisma.AtLeast<{
   installationDate?: Prisma.DateTimeNullableFilter<"Customer"> | Date | string | null
   warrantyPeriod?: Prisma.StringNullableFilter<"Customer"> | string | null
   plantModelName?: Prisma.StringNullableFilter<"Customer"> | string | null
+  plantCategory?: Prisma.EnumPlantCategoryNullableFilter<"Customer"> | $Enums.PlantCategory | null
+  plantCost?: Prisma.FloatNullableFilter<"Customer"> | number | null
+  paymentMode?: Prisma.StringNullableFilter<"Customer"> | string | null
+  emi?: Prisma.IntNullableFilter<"Customer"> | number | null
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableFilter<"Customer"> | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFilter<"Customer"> | Date | string
   services?: Prisma.ServiceListRelationFilter
   amcs?: Prisma.AMCContractListRelationFilter
@@ -264,10 +352,17 @@ export type CustomerOrderByWithAggregationInput = {
   installationDate?: Prisma.SortOrderInput | Prisma.SortOrder
   warrantyPeriod?: Prisma.SortOrderInput | Prisma.SortOrder
   plantModelName?: Prisma.SortOrderInput | Prisma.SortOrder
+  plantCategory?: Prisma.SortOrderInput | Prisma.SortOrder
+  plantCost?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentMode?: Prisma.SortOrderInput | Prisma.SortOrder
+  emi?: Prisma.SortOrderInput | Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.CustomerCountOrderByAggregateInput
+  _avg?: Prisma.CustomerAvgOrderByAggregateInput
   _max?: Prisma.CustomerMaxOrderByAggregateInput
   _min?: Prisma.CustomerMinOrderByAggregateInput
+  _sum?: Prisma.CustomerSumOrderByAggregateInput
 }
 
 export type CustomerScalarWhereWithAggregatesInput = {
@@ -282,6 +377,11 @@ export type CustomerScalarWhereWithAggregatesInput = {
   installationDate?: Prisma.DateTimeNullableWithAggregatesFilter<"Customer"> | Date | string | null
   warrantyPeriod?: Prisma.StringNullableWithAggregatesFilter<"Customer"> | string | null
   plantModelName?: Prisma.StringNullableWithAggregatesFilter<"Customer"> | string | null
+  plantCategory?: Prisma.EnumPlantCategoryNullableWithAggregatesFilter<"Customer"> | $Enums.PlantCategory | null
+  plantCost?: Prisma.FloatNullableWithAggregatesFilter<"Customer"> | number | null
+  paymentMode?: Prisma.StringNullableWithAggregatesFilter<"Customer"> | string | null
+  emi?: Prisma.IntNullableWithAggregatesFilter<"Customer"> | number | null
+  paymentStatus?: Prisma.EnumServicePaymentStatusNullableWithAggregatesFilter<"Customer"> | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Customer"> | Date | string
 }
 
@@ -294,6 +394,11 @@ export type CustomerCreateInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceCreateNestedManyWithoutCustomerInput
   amcs?: Prisma.AMCContractCreateNestedManyWithoutCustomerInput
@@ -310,6 +415,11 @@ export type CustomerUncheckedCreateInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutCustomerInput
   amcs?: Prisma.AMCContractUncheckedCreateNestedManyWithoutCustomerInput
@@ -326,6 +436,11 @@ export type CustomerUpdateInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUpdateManyWithoutCustomerNestedInput
   amcs?: Prisma.AMCContractUpdateManyWithoutCustomerNestedInput
@@ -342,6 +457,11 @@ export type CustomerUncheckedUpdateInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUncheckedUpdateManyWithoutCustomerNestedInput
   amcs?: Prisma.AMCContractUncheckedUpdateManyWithoutCustomerNestedInput
@@ -358,6 +478,11 @@ export type CustomerCreateManyInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
 }
 
@@ -370,6 +495,11 @@ export type CustomerUpdateManyMutationInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -382,6 +512,11 @@ export type CustomerUncheckedUpdateManyInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -394,7 +529,17 @@ export type CustomerCountOrderByAggregateInput = {
   installationDate?: Prisma.SortOrder
   warrantyPeriod?: Prisma.SortOrder
   plantModelName?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrder
+  plantCost?: Prisma.SortOrder
+  paymentMode?: Prisma.SortOrder
+  emi?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type CustomerAvgOrderByAggregateInput = {
+  plantCost?: Prisma.SortOrder
+  emi?: Prisma.SortOrder
 }
 
 export type CustomerMaxOrderByAggregateInput = {
@@ -406,6 +551,11 @@ export type CustomerMaxOrderByAggregateInput = {
   installationDate?: Prisma.SortOrder
   warrantyPeriod?: Prisma.SortOrder
   plantModelName?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrder
+  plantCost?: Prisma.SortOrder
+  paymentMode?: Prisma.SortOrder
+  emi?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
 
@@ -418,12 +568,46 @@ export type CustomerMinOrderByAggregateInput = {
   installationDate?: Prisma.SortOrder
   warrantyPeriod?: Prisma.SortOrder
   plantModelName?: Prisma.SortOrder
+  plantCategory?: Prisma.SortOrder
+  plantCost?: Prisma.SortOrder
+  paymentMode?: Prisma.SortOrder
+  emi?: Prisma.SortOrder
+  paymentStatus?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
+}
+
+export type CustomerSumOrderByAggregateInput = {
+  plantCost?: Prisma.SortOrder
+  emi?: Prisma.SortOrder
 }
 
 export type CustomerScalarRelationFilter = {
   is?: Prisma.CustomerWhereInput
   isNot?: Prisma.CustomerWhereInput
+}
+
+export type NullableEnumPlantCategoryFieldUpdateOperationsInput = {
+  set?: $Enums.PlantCategory | null
+}
+
+export type NullableFloatFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type NullableEnumServicePaymentStatusFieldUpdateOperationsInput = {
+  set?: $Enums.ServicePaymentStatus | null
 }
 
 export type CustomerCreateNestedOneWithoutServicesInput = {
@@ -491,6 +675,11 @@ export type CustomerCreateWithoutServicesInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   amcs?: Prisma.AMCContractCreateNestedManyWithoutCustomerInput
   payments?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
@@ -506,6 +695,11 @@ export type CustomerUncheckedCreateWithoutServicesInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   amcs?: Prisma.AMCContractUncheckedCreateNestedManyWithoutCustomerInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
@@ -537,6 +731,11 @@ export type CustomerUpdateWithoutServicesInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amcs?: Prisma.AMCContractUpdateManyWithoutCustomerNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
@@ -552,6 +751,11 @@ export type CustomerUncheckedUpdateWithoutServicesInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   amcs?: Prisma.AMCContractUncheckedUpdateManyWithoutCustomerNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
@@ -567,6 +771,11 @@ export type CustomerCreateWithoutAmcsInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceCreateNestedManyWithoutCustomerInput
   payments?: Prisma.PaymentCreateNestedManyWithoutCustomerInput
@@ -582,6 +791,11 @@ export type CustomerUncheckedCreateWithoutAmcsInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutCustomerInput
   payments?: Prisma.PaymentUncheckedCreateNestedManyWithoutCustomerInput
@@ -613,6 +827,11 @@ export type CustomerUpdateWithoutAmcsInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUpdateManyWithoutCustomerNestedInput
   payments?: Prisma.PaymentUpdateManyWithoutCustomerNestedInput
@@ -628,6 +847,11 @@ export type CustomerUncheckedUpdateWithoutAmcsInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUncheckedUpdateManyWithoutCustomerNestedInput
   payments?: Prisma.PaymentUncheckedUpdateManyWithoutCustomerNestedInput
@@ -643,6 +867,11 @@ export type CustomerCreateWithoutPaymentsInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceCreateNestedManyWithoutCustomerInput
   amcs?: Prisma.AMCContractCreateNestedManyWithoutCustomerInput
@@ -658,6 +887,11 @@ export type CustomerUncheckedCreateWithoutPaymentsInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutCustomerInput
   amcs?: Prisma.AMCContractUncheckedCreateNestedManyWithoutCustomerInput
@@ -689,6 +923,11 @@ export type CustomerUpdateWithoutPaymentsInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUpdateManyWithoutCustomerNestedInput
   amcs?: Prisma.AMCContractUpdateManyWithoutCustomerNestedInput
@@ -704,6 +943,11 @@ export type CustomerUncheckedUpdateWithoutPaymentsInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUncheckedUpdateManyWithoutCustomerNestedInput
   amcs?: Prisma.AMCContractUncheckedUpdateManyWithoutCustomerNestedInput
@@ -719,6 +963,11 @@ export type CustomerCreateWithoutComplaintsInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceCreateNestedManyWithoutCustomerInput
   amcs?: Prisma.AMCContractCreateNestedManyWithoutCustomerInput
@@ -734,6 +983,11 @@ export type CustomerUncheckedCreateWithoutComplaintsInput = {
   installationDate?: Date | string | null
   warrantyPeriod?: string | null
   plantModelName?: string | null
+  plantCategory?: $Enums.PlantCategory | null
+  plantCost?: number | null
+  paymentMode?: string | null
+  emi?: number | null
+  paymentStatus?: $Enums.ServicePaymentStatus | null
   createdAt?: Date | string
   services?: Prisma.ServiceUncheckedCreateNestedManyWithoutCustomerInput
   amcs?: Prisma.AMCContractUncheckedCreateNestedManyWithoutCustomerInput
@@ -765,6 +1019,11 @@ export type CustomerUpdateWithoutComplaintsInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUpdateManyWithoutCustomerNestedInput
   amcs?: Prisma.AMCContractUpdateManyWithoutCustomerNestedInput
@@ -780,6 +1039,11 @@ export type CustomerUncheckedUpdateWithoutComplaintsInput = {
   installationDate?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   warrantyPeriod?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   plantModelName?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  plantCategory?: Prisma.NullableEnumPlantCategoryFieldUpdateOperationsInput | $Enums.PlantCategory | null
+  plantCost?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  paymentMode?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  emi?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  paymentStatus?: Prisma.NullableEnumServicePaymentStatusFieldUpdateOperationsInput | $Enums.ServicePaymentStatus | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   services?: Prisma.ServiceUncheckedUpdateManyWithoutCustomerNestedInput
   amcs?: Prisma.AMCContractUncheckedUpdateManyWithoutCustomerNestedInput
@@ -853,6 +1117,11 @@ export type CustomerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   installationDate?: boolean
   warrantyPeriod?: boolean
   plantModelName?: boolean
+  plantCategory?: boolean
+  plantCost?: boolean
+  paymentMode?: boolean
+  emi?: boolean
+  paymentStatus?: boolean
   createdAt?: boolean
   services?: boolean | Prisma.Customer$servicesArgs<ExtArgs>
   amcs?: boolean | Prisma.Customer$amcsArgs<ExtArgs>
@@ -870,6 +1139,11 @@ export type CustomerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   installationDate?: boolean
   warrantyPeriod?: boolean
   plantModelName?: boolean
+  plantCategory?: boolean
+  plantCost?: boolean
+  paymentMode?: boolean
+  emi?: boolean
+  paymentStatus?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["customer"]>
 
@@ -882,6 +1156,11 @@ export type CustomerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   installationDate?: boolean
   warrantyPeriod?: boolean
   plantModelName?: boolean
+  plantCategory?: boolean
+  plantCost?: boolean
+  paymentMode?: boolean
+  emi?: boolean
+  paymentStatus?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["customer"]>
 
@@ -894,10 +1173,15 @@ export type CustomerSelectScalar = {
   installationDate?: boolean
   warrantyPeriod?: boolean
   plantModelName?: boolean
+  plantCategory?: boolean
+  plantCost?: boolean
+  paymentMode?: boolean
+  emi?: boolean
+  paymentStatus?: boolean
   createdAt?: boolean
 }
 
-export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "address" | "phone" | "email" | "installationDate" | "warrantyPeriod" | "plantModelName" | "createdAt", ExtArgs["result"]["customer"]>
+export type CustomerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "address" | "phone" | "email" | "installationDate" | "warrantyPeriod" | "plantModelName" | "plantCategory" | "plantCost" | "paymentMode" | "emi" | "paymentStatus" | "createdAt", ExtArgs["result"]["customer"]>
 export type CustomerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   services?: boolean | Prisma.Customer$servicesArgs<ExtArgs>
   amcs?: boolean | Prisma.Customer$amcsArgs<ExtArgs>
@@ -925,6 +1209,11 @@ export type $CustomerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     installationDate: Date | null
     warrantyPeriod: string | null
     plantModelName: string | null
+    plantCategory: $Enums.PlantCategory | null
+    plantCost: number | null
+    paymentMode: string | null
+    emi: number | null
+    paymentStatus: $Enums.ServicePaymentStatus | null
     createdAt: Date
   }, ExtArgs["result"]["customer"]>
   composites: {}
@@ -1361,6 +1650,11 @@ export interface CustomerFieldRefs {
   readonly installationDate: Prisma.FieldRef<"Customer", 'DateTime'>
   readonly warrantyPeriod: Prisma.FieldRef<"Customer", 'String'>
   readonly plantModelName: Prisma.FieldRef<"Customer", 'String'>
+  readonly plantCategory: Prisma.FieldRef<"Customer", 'PlantCategory'>
+  readonly plantCost: Prisma.FieldRef<"Customer", 'Float'>
+  readonly paymentMode: Prisma.FieldRef<"Customer", 'String'>
+  readonly emi: Prisma.FieldRef<"Customer", 'Int'>
+  readonly paymentStatus: Prisma.FieldRef<"Customer", 'ServicePaymentStatus'>
   readonly createdAt: Prisma.FieldRef<"Customer", 'DateTime'>
 }
     

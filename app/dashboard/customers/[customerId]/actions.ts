@@ -60,12 +60,33 @@ export async function addService(customerId: string, formData: FormData) {
   const nextDueDate = new Date(validated.data.installationDate);
   nextDueDate.setMonth(nextDueDate.getMonth() + 3);
 
+  // Generate serviceNumber locally
+  const date = new Date();
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const day = date.getDate().toString().padStart(2, "0");
+  const dateStr = `${year}${month}${day}`;
+
+  const count = await prisma.service.count({
+    where: {
+      serviceRegisterDate: {
+        gte: new Date(date.setHours(0, 0, 0, 0)),
+        lt: new Date(date.setHours(23, 59, 59, 999)),
+      },
+    },
+  });
+
+  const sequence = (count + 1).toString().padStart(3, "0");
+  const serviceNumber = `SRV-${dateStr}-${sequence}`;
+
   await prisma.service.create({
     data: {
+      serviceNumber,
       customerId,
       serviceType: validated.data.serviceType,
       serviceRegisterDate: validated.data.installationDate,
       nextServiceDueDate: nextDueDate, // Explictly set based on installation date
+      status: $Enums.ServiceStatus.PENDING,
     },
   });
 

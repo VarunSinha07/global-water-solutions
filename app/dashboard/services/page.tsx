@@ -8,7 +8,7 @@ import {
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { ServicesGrid } from "@/components/dashboard/services/services-grid";
+import { ServicesTable } from "@/components/dashboard/services/services-table";
 import { SearchInput } from "@/components/ui/search-input";
 import { FilterDialog, FilterCategory } from "@/components/ui/filter-dialog";
 import { Prisma } from "@/generated/prisma/client";
@@ -63,6 +63,7 @@ export default async function ServicesPage({
     where,
     include: {
       customer: true,
+      technician: true,
       _count: { select: { amcContracts: true, complaints: true } },
     },
     orderBy,
@@ -278,7 +279,7 @@ export default async function ServicesPage({
           </Link>
         </div>
       ) : (
-        <ServicesGrid services={servicesForGrid} />
+        <ServicesTable services={services as any} />
       )}
     </div>
   );

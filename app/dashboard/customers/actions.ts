@@ -13,6 +13,13 @@ const createCustomerSchema = z.object({
   installationDate: z.string().optional(),
   warrantyPeriod: z.string().optional(),
   plantModelName: z.string().optional(),
+  plantCategory: z
+    .lazy(() => z.enum(["DOMESTIC", "INDUSTRIAL", "WATER_TREATMENT"]))
+    .optional(),
+  plantCost: z.coerce.number().min(0).optional(),
+  paymentMode: z.string().optional(),
+  emi: z.coerce.number().min(1).max(4).optional(),
+  paymentStatus: z.lazy(() => z.enum(["PAID", "UNPAID"])).optional(),
 });
 
 export async function createCustomer(formData: FormData) {
@@ -24,6 +31,11 @@ export async function createCustomer(formData: FormData) {
     installationDate: formData.get("installationDate"),
     warrantyPeriod: formData.get("warrantyPeriod"),
     plantModelName: formData.get("plantModelName"),
+    plantCategory: formData.get("plantCategory") || undefined,
+    plantCost: formData.get("plantCost") || undefined,
+    paymentMode: formData.get("paymentMode") || undefined,
+    emi: formData.get("emi") || undefined,
+    paymentStatus: formData.get("paymentStatus") || undefined,
   };
 
   const validatedData = createCustomerSchema.safeParse(rawData);
@@ -46,6 +58,11 @@ export async function createCustomer(formData: FormData) {
           : null,
         warrantyPeriod: validatedData.data.warrantyPeriod || null,
         plantModelName: validatedData.data.plantModelName || null,
+        plantCategory: (validatedData.data.plantCategory as any) || null,
+        plantCost: validatedData.data.plantCost || null,
+        paymentMode: validatedData.data.paymentMode || null,
+        emi: validatedData.data.emi || null,
+        paymentStatus: (validatedData.data.paymentStatus as any) || null,
       },
     });
   } catch (e) {

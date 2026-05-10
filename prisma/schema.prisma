@@ -27,6 +27,13 @@ enum PaymentStatus {
   FAILED
 }
 
+enum ServiceStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
 enum ComplaintStatus {
   OPEN
   IN_PROGRESS
@@ -64,6 +71,7 @@ model User {
   notifications Notification[]
   role          String?   @default("user")
   assignedComplaints Complaint[] @relation("TechnicianComplaints")
+  assignedServices   Service[]   @relation("TechnicianServices")
 
   @@unique([email])
   @@map("user")
@@ -127,6 +135,11 @@ model Customer {
   installationDate DateTime?
   warrantyPeriod   String?
   plantModelName   String?
+  plantCategory    PlantCategory?
+  plantCost        Float?
+  paymentMode      String?
+  emi              Int?
+  paymentStatus    ServicePaymentStatus?
   createdAt        DateTime  @default(now())
 
   services      Service[]
@@ -137,17 +150,21 @@ model Customer {
 
 model Service {
   id                   String                @id @default(uuid())
+  serviceNumber        String?               @unique
   customerId           String
   serviceType          String
   plantCategory        PlantCategory?
   paymentMode          String?
   amount               Float?
+  status               ServiceStatus         @default(PENDING)
+  technicianId         String?
   paymentStatus        ServicePaymentStatus?
   serviceRegisterDate  DateTime              @default(now())
   serviceCompleteDate  DateTime?
   nextServiceDueDate   DateTime              @default(dbgenerated("now() + interval '3 months'"))
 
   customer     Customer      @relation(fields: [customerId], references: [id])
+  technician   User?         @relation("TechnicianServices", fields: [technicianId], references: [id])
   complaints   Complaint[]
   amcContracts AMCContract[]
 }

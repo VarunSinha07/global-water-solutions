@@ -32,6 +32,11 @@ type CustomerDetail = {
   phone: string;
   email: string | null;
   createdAt: Date;
+  plantCategory?: string | null;
+  plantCost?: number | null;
+  paymentMode?: string | null;
+  emi?: number | null;
+  paymentStatus?: string | null;
   services: {
     id: string;
     serviceType: string;
@@ -150,6 +155,77 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
                 <div className="flex-1">
                   <p className="font-medium text-gray-900">Address</p>
                   <p className="text-gray-500 mt-0.5">{customer.address}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="group rounded-xl border border-gray-200/60 bg-white p-6 shadow-sm transition-all hover:shadow-md">
+            <div className="mb-6 flex items-center justify-between">
+              <h3 className="text-base font-semibold text-gray-900 flex items-center">
+                <div className="mr-3 flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600">
+                  <Wrench className="h-4 w-4" />
+                </div>
+                Plant & Financials
+              </h3>
+            </div>
+            <div className="space-y-5 text-sm">
+              <div className="flex items-start group/item">
+                <div className="mt-0.5 flex-1">
+                  <p className="font-medium text-gray-900 text-xs uppercase tracking-wider text-gray-400">
+                    Category
+                  </p>
+                  <p className="text-gray-900 mt-1 font-medium capitalize">
+                    {customer.plantCategory?.replace("_", " ").toLowerCase() ||
+                      "N/A"}
+                  </p>
+                </div>
+                <div className="mt-0.5 flex-1">
+                  <p className="font-medium text-gray-900 text-xs uppercase tracking-wider text-gray-400">
+                    Cost
+                  </p>
+                  <p className="text-gray-900 mt-1 font-medium">
+                    {customer.plantCost != null
+                      ? `Rs. ${customer.plantCost.toLocaleString()}`
+                      : "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start group/item">
+                <div className="mt-0.5 flex-1">
+                  <p className="font-medium text-gray-900 text-xs uppercase tracking-wider text-gray-400">
+                    Payment Mode
+                  </p>
+                  <p className="text-gray-900 mt-1 font-medium">
+                    {customer.paymentMode || "N/A"}
+                  </p>
+                </div>
+                <div className="mt-0.5 flex-1">
+                  <p className="font-medium text-gray-900 text-xs uppercase tracking-wider text-gray-400">
+                    EMI / Iterations
+                  </p>
+                  <p className="text-gray-900 mt-1 font-medium">
+                    {customer.emi ? `${customer.emi} Installment(s)` : "N/A"}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-start group/item pt-3 border-t border-gray-100">
+                <div className="mt-0.5 flex-1 flex items-center justify-between w-full">
+                  <p className="font-medium text-gray-900 text-xs uppercase tracking-wider text-gray-400">
+                    Status
+                  </p>
+                  <span
+                    className={cn(
+                      "px-2.5 py-1 text-xs font-semibold rounded-full",
+                      customer.paymentStatus === "PAID"
+                        ? "bg-green-50 text-green-700 ring-1 ring-green-600/20"
+                        : customer.paymentStatus === "UNPAID"
+                          ? "bg-amber-50 text-amber-700 ring-1 ring-amber-600/20"
+                          : "bg-gray-50 text-gray-600 ring-1 ring-gray-500/20",
+                    )}
+                  >
+                    {customer.paymentStatus || "UNKNOWN"}
+                  </span>
                 </div>
               </div>
             </div>
