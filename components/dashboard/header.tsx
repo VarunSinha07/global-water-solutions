@@ -7,6 +7,7 @@ import {
   AlertCircle,
   Loader2,
   X,
+  Menu,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { NotificationDropdown } from "@/components/dashboard/notification-dropdown";
@@ -15,7 +16,11 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { globalSearch, type SearchResult } from "@/app/dashboard/actions";
 
-export function Header() {
+interface HeaderProps {
+  onOpenSidebar?: () => void;
+}
+
+export function Header({ onOpenSidebar }: HeaderProps) {
   const { data: session } = authClient.useSession();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<SearchResult[]>([]);
@@ -83,7 +88,16 @@ export function Header() {
   };
 
   return (
-    <header className="sticky top-0 z-10 flex h-16 flex-shrink-0 items-center gap-x-4 border-b border-gray-200/50 bg-white/80 px-6 shadow-sm backdrop-blur-xl transition-all">
+    <header className="sticky top-0 z-10 flex h-16 flex-shrink-0 items-center gap-x-4 border-b border-gray-200/50 bg-white/80 px-4 sm:px-6 shadow-sm backdrop-blur-xl transition-all">
+      {onOpenSidebar && (
+        <button
+          type="button"
+          onClick={onOpenSidebar}
+          className="p-2 -ml-1 text-slate-500 hover:text-slate-700 hover:bg-slate-100/50 rounded-xl lg:hidden focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        >
+          <Menu className="h-6 w-6" />
+        </button>
+      )}
       <div className="flex flex-1 gap-x-4 self-stretch lg:gap-x-6">
         <div className="relative flex flex-1">
           <label htmlFor="search-field" className="sr-only">

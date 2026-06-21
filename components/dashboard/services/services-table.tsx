@@ -5,7 +5,7 @@ import { Eye } from "lucide-react";
 import { Prisma } from "@/generated/prisma/client";
 
 // Infer type from Prisma includes
-type ServiceWithCustomer = Prisma.ServiceGetPayload<{
+export type ServiceWithCustomer = Prisma.ServiceGetPayload<{
   include: {
     customer: true;
     technician: true;

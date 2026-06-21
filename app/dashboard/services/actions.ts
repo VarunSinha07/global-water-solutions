@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { $Enums } from "@/generated/prisma/client";
+import { requireAdmin } from "@/lib/auth-utils";
 
 async function generateServiceNumber() {
   const date = new Date();
@@ -40,6 +41,7 @@ const createServiceSchema = z.object({
 });
 
 export async function createService(formData: FormData) {
+  await requireAdmin();
   const customerId = formData.get("customerId") as string;
   const serviceType = formData.get("serviceType") as string;
   const plantCategory = formData.get("plantCategory") as string;
@@ -106,18 +108,19 @@ export async function createService(formData: FormData) {
 }
 
 export async function updateService(serviceId: string, formData: FormData) {
+  await requireAdmin();
   const serviceCompleteDate = formData.get("serviceCompleteDate") as string;
   const paymentMode = formData.get("paymentMode") as string;
   const paymentStatus = formData.get("paymentStatus") as string;
   const amount = formData.get("amount") as string;
   const status = formData.get("status") as string;
-
+ 
   try {
     const existing = await prisma.service.findUnique({
       where: { id: serviceId },
     });
     if (!existing) return { error: "Service not found" };
-
+ 
     if (existing.status === $Enums.ServiceStatus.COMPLETED) {
       // If already completed, maybe only allow some changes or block?
       // Based on user: completion date and payment details remain editable *until* the service is completed.
@@ -126,7 +129,7 @@ export async function updateService(serviceId: string, formData: FormData) {
         // allow unlocking maybe? Usually "editable until completed" means frontend disables forms, we'll just process it anyway
       }
     }
-
+ 
     let finalTechnicianId: string | null | undefined = undefined;
     
     if (formData.has("technicianName")) {
@@ -135,14 +138,14 @@ export async function updateService(serviceId: string, formData: FormData) {
         finalTechnicianId = null;
       } else {
         let tech = await prisma.user.findFirst({
-          where: { name: { equals: technicianName.trim(), mode: "insensitive" }, role: "TECHNICIAN" },
+          where: { name: { equals: technicianName.trim(), mode: "insensitive" }, role: "user" },
         });
         if (!tech) {
           tech = await prisma.user.create({
             data: {
               name: technicianName.trim(),
               email: `tech_${Date.now()}@water.local`,
-              role: "TECHNICIAN",
+              role: "user",
             },
           });
         }
@@ -160,8 +163,8 @@ export async function updateService(serviceId: string, formData: FormData) {
           ? new Date(serviceCompleteDate)
           : null,
         paymentMode: paymentMode || null,
-        paymentStatus: (paymentStatus as any) || null,
-        status: (status as any) || undefined,
+        paymentStatus: (paymentStatus as $Enums.ServicePaymentStatus) || null,
+        status: (status as $Enums.ServiceStatus) || undefined,
         amount: amount ? parseFloat(amount) : null,
         technicianId: finalTechnicianId,
       },

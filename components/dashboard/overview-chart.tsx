@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useIsClient } from "@/lib/hooks/use-is-client";
 import {
   Area,
   AreaChart,
@@ -58,8 +59,21 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
 
 export function OverviewChart({ data }: OverviewChartProps) {
   const [period, setPeriod] = useState<"6M" | "1Y" | "ALL">("6M");
+  const isClient = useIsClient();
 
   const displayData = data[period] || [];
+
+  if (!isClient) {
+    return (
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-white/60 bg-white/40 backdrop-blur-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] h-full w-full animate-pulse flex flex-col justify-between min-h-[400px]">
+        <div>
+          <div className="h-6 w-48 bg-slate-200/60 rounded-md mb-2" />
+          <div className="h-4 w-64 bg-slate-200/60 rounded-md" />
+        </div>
+        <div className="h-[280px] w-full bg-slate-100/50 rounded-2xl mt-8" />
+      </div>
+    );
+  }
 
   return (
     <motion.div

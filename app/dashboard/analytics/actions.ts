@@ -2,8 +2,10 @@
 
 import { prisma } from "@/lib/db";
 import { $Enums } from "@/generated/prisma/client";
+import { requireAdmin } from "@/lib/auth-utils";
 
 export async function getComplaintsByStatus() {
+  await requireAdmin();
   const result = await prisma.complaint.groupBy({
     by: ["status"],
     _count: {
@@ -26,6 +28,7 @@ export async function getComplaintsByStatus() {
 }
 
 export async function getAMCsByStatus() {
+  await requireAdmin();
   const result = await prisma.aMCContract.groupBy({
     by: ["status"],
     _count: {
@@ -48,6 +51,7 @@ export async function getAMCsByStatus() {
 }
 
 export async function getServiceTypesDistribution() {
+  await requireAdmin();
   const result = await prisma.service.groupBy({
     by: ["serviceType"],
     _count: {
@@ -62,6 +66,7 @@ export async function getServiceTypesDistribution() {
 }
 
 export async function getCustomersAcquiredOverTime() {
+  await requireAdmin();
   // Get last 6 months
   const months = [];
   const monthlyData: Record<string, number> = {};

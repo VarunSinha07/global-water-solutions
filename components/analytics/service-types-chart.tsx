@@ -1,12 +1,12 @@
 "use client";
 
+import { useIsClient } from "@/lib/hooks/use-is-client";
 import {
   PieChart,
   Pie,
   Cell,
   ResponsiveContainer,
   Tooltip,
-  Legend,
 } from "recharts";
 import { motion } from "framer-motion";
 
@@ -24,6 +24,19 @@ const COLORS = [
 ];
 
 export function ServiceTypesChart({ data }: ServiceTypesChartProps) {
+  const isClient = useIsClient();
+
+  if (!isClient) {
+    return (
+      <div className="relative overflow-hidden rounded-[2.5rem] border border-white/60 bg-white/40 backdrop-blur-xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.04)] h-full w-full animate-pulse min-h-[380px] flex flex-col justify-between">
+        <div>
+          <div className="h-6 w-48 bg-slate-200/60 rounded-md mb-2" />
+        </div>
+        <div className="h-[280px] w-full bg-slate-100/50 rounded-2xl" />
+      </div>
+    );
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

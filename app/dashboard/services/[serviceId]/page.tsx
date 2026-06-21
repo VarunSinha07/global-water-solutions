@@ -34,7 +34,7 @@ export default async function ServiceDetailsPage({
   });
 
   const technicians = await prisma.user.findMany({
-    where: { role: "TECHNICIAN" },
+    where: { role: "user" },
     select: { id: true, name: true },
   });
 

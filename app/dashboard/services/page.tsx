@@ -8,7 +8,7 @@ import {
   XCircle,
 } from "lucide-react";
 import Link from "next/link";
-import { ServicesTable } from "@/components/dashboard/services/services-table";
+import { ServicesTable, type ServiceWithCustomer } from "@/components/dashboard/services/services-table";
 import { SearchInput } from "@/components/ui/search-input";
 import { FilterDialog, FilterCategory } from "@/components/ui/filter-dialog";
 import { Prisma } from "@/generated/prisma/client";
@@ -99,10 +99,7 @@ export default async function ServicesPage({
 
   const activeCount = services.filter((s) => s._count.amcContracts > 0).length;
   const inactiveCount = services.length - activeCount;
-  const servicesForGrid = services.map((service) => ({
-    ...service,
-    serviceRegisterDate: service.serviceRegisterDate,
-  }));
+
 
   return (
     <div
@@ -279,7 +276,7 @@ export default async function ServicesPage({
           </Link>
         </div>
       ) : (
-        <ServicesTable services={services as any} />
+        <ServicesTable services={services as ServiceWithCustomer[]} />
       )}
     </div>
   );

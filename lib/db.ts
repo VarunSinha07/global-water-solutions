@@ -15,7 +15,25 @@ const adapter = new PrismaPg(pool);
 
 const globalForPrisma = global as unknown as { prisma_v2: PrismaClient };
 
-export const prisma =
+export const rawPrisma =
   globalForPrisma.prisma_v2 || new PrismaClient({ adapter });
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma_v2 = prisma;
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma_v2 = rawPrisma;
+
+export const prisma = rawPrisma.$extends({
+  query: {
+    user: {
+      async create({ args, query }) {
+        // Count users to see if this is the first user
+        const userCount = await rawPrisma.user.count();
+        if (userCount === 0) {
+          // Force first user to be admin
+          if (args.data) {
+            args.data.role = "admin";
+          }
+        }
+        return query(args);
+      },
+    },
+  },
+});

@@ -14,6 +14,8 @@ import {
   LogOut,
   Settings,
   ChevronRight,
+  Shield,
+  X,
 } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
@@ -27,9 +29,10 @@ const navigation = [
   { name: "Payments", href: "/dashboard/payments", icon: CreditCard },
   { name: "Complaints", href: "/dashboard/complaints", icon: MessageSquare },
   { name: "Analytics", href: "/dashboard/analytics", icon: BarChart3 },
+  { name: "User Management", href: "/dashboard/users", icon: Shield },
 ];
 
-export function Sidebar() {
+export function Sidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
   const router = useRouter();
 
@@ -47,7 +50,7 @@ export function Sidebar() {
     <div className="flex h-full w-[280px] flex-col bg-white/40 backdrop-blur-2xl border-r border-slate-200/60 shadow-[4px_0_24px_rgba(0,0,0,0.02)] relative z-20">
       
       {/* ── Brand Header ── */}
-      <div className="flex h-24 items-center px-8 relative">
+      <div className="flex h-24 items-center justify-between px-8 relative">
         <div className="flex items-center gap-4 font-black text-2xl tracking-tight text-slate-800">
           <div className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#2e3458] to-[#4f5fa8] shadow-[0_4px_12px_rgba(46,52,88,0.3)]">
             <div className="absolute inset-0 rounded-2xl border border-white/20" />
@@ -57,6 +60,15 @@ export function Sidebar() {
             GWS ERP
           </span>
         </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            className="p-2 -mr-2 text-slate-400 hover:text-slate-600 lg:hidden rounded-xl hover:bg-slate-100/50 transition-colors"
+          >
+            <X className="h-5 w-5" />
+          </button>
+        )}
       </div>
 
       {/* ── Main Navigation ── */}
@@ -78,6 +90,7 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={onClose}
                 className={cn(
                   "group relative flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition-colors duration-300 outline-none",
                   isCurrent ? "text-[#2e3458]" : "text-slate-500 hover:text-slate-800"
@@ -133,6 +146,7 @@ export function Sidebar() {
           
           <Link
             href="/dashboard/settings"
+            onClick={onClose}
             className={cn(
               "group relative flex items-center rounded-2xl px-4 py-3 text-sm font-bold transition-all duration-300",
               pathname?.startsWith("/dashboard/settings")

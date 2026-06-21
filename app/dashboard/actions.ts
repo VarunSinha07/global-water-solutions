@@ -2,8 +2,10 @@
 
 import { prisma } from "@/lib/db";
 import { $Enums } from "@/generated/prisma/client";
+import { requireAdmin } from "@/lib/auth-utils";
 
 export async function getDashboardStats() {
+  await requireAdmin();
   const [totalCustomers, activeAMCs, openComplaintsCount] = await Promise.all([
     prisma.customer.count(),
     prisma.aMCContract.count({
@@ -18,23 +20,34 @@ export async function getDashboardStats() {
     }),
   ]);
 
-  // Calculate pending amount dynamically with minimal payload
-  const allAMCs = await prisma.aMCContract.findMany({
-    select: {
+  // Calculate pending amount dynamically with aggregated queries instead of nested O(N) relations
+  const paymentGroups = await prisma.payment.groupBy({
+    by: ["amcId"],
+    where: {
+      status: "PAID",
+      amcId: { not: null },
+    },
+    _sum: {
       amount: true,
-      payments: {
-        where: { status: "PAID" },
-        select: { amount: true },
-      },
+    },
+  });
+
+  const paidMap = new Map<string, number>(
+    paymentGroups.map((g) => [g.amcId!, g._sum.amount || 0])
+  );
+
+  const contracts = await prisma.aMCContract.findMany({
+    select: {
+      id: true,
+      amount: true,
     },
   });
 
   let pendingAmount = 0;
   let pendingAMCsCount = 0;
 
-  for (const amc of allAMCs) {
-    const paidAmount = amc.payments.reduce((sum, p) => sum + p.amount, 0);
-
+  for (const amc of contracts) {
+    const paidAmount = paidMap.get(amc.id) || 0;
     const due = amc.amount - paidAmount;
 
     if (due > 0) {
@@ -53,6 +66,7 @@ export async function getDashboardStats() {
 }
 
 export async function getExpiringAMCs() {
+  await requireAdmin();
   const thirtyDaysFromNow = new Date();
   thirtyDaysFromNow.setDate(thirtyDaysFromNow.getDate() + 30);
   const now = new Date();
@@ -77,6 +91,7 @@ export async function getExpiringAMCs() {
 }
 
 export async function getRecentComplaints() {
+  await requireAdmin();
   return await prisma.complaint.findMany({
     where: {
       status: {
@@ -95,6 +110,7 @@ export async function getRecentComplaints() {
 }
 
 export async function getMonthlyRevenue(period: "6M" | "1Y" | "ALL" = "6M") {
+  await requireAdmin();
   const startDate = new Date();
   startDate.setDate(1); // Start at the beginning of the current month
   startDate.setHours(0, 0, 0, 0);
@@ -183,6 +199,7 @@ export async function getMonthlyRevenue(period: "6M" | "1Y" | "ALL" = "6M") {
 }
 
 export async function getRecentActivity() {
+  await requireAdmin();
   const payments = await prisma.payment.findMany({
     take: 5,
     orderBy: {
@@ -218,6 +235,7 @@ export type SearchResult = {
 };
 
 export async function globalSearch(query: string): Promise<SearchResult[]> {
+  await requireAdmin();
   if (!query || query.length < 2) return [];
 
   const [customers, amcs, complaints] = await Promise.all([
@@ -287,6 +305,7 @@ export async function globalSearch(query: string): Promise<SearchResult[]> {
 }
 
 export async function getServiceReminders() {
+  await requireAdmin();
   const today = new Date();
   today.setHours(23, 59, 59, 999);
 

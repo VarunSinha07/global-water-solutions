@@ -146,6 +146,9 @@ model Customer {
   amcs          AMCContract[]
   payments      Payment[]
   complaints    Complaint[]
+
+  @@index([name])
+  @@index([phone])
 }
 
 model Service {
@@ -167,6 +170,9 @@ model Service {
   technician   User?         @relation("TechnicianServices", fields: [technicianId], references: [id])
   complaints   Complaint[]
   amcContracts AMCContract[]
+
+  @@index([customerId])
+  @@index([technicianId])
 }
 
 model AMCContract {
@@ -183,6 +189,9 @@ model AMCContract {
   customer Customer  @relation(fields: [customerId], references: [id])
   service  Service   @relation(fields: [serviceId], references: [id])
   payments Payment[]
+
+  @@index([customerId])
+  @@index([serviceId])
 }
 
 model Payment {
@@ -198,6 +207,9 @@ model Payment {
   customer   Customer     @relation(fields: [customerId], references: [id])
   amc        AMCContract? @relation(fields: [amcId], references: [id])
   financeLog FinanceLog?
+
+  @@index([customerId])
+  @@index([amcId])
 }
 
 model Complaint {
@@ -212,6 +224,10 @@ model Complaint {
   customer   Customer @relation(fields: [customerId], references: [id])
   service    Service  @relation(fields: [serviceId], references: [id])
   technician User?    @relation("TechnicianComplaints", fields: [technicianId], references: [id])
+
+  @@index([customerId])
+  @@index([serviceId])
+  @@index([technicianId])
 }
 
 
@@ -235,4 +251,6 @@ model Notification {
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }

@@ -4,8 +4,10 @@ import { prisma } from "@/lib/db";
 import { $Enums } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { requireAdmin } from "@/lib/auth-utils";
 
 export async function getCustomerDetails(customerId: string) {
+  await requireAdmin();
   const customer = await prisma.customer.findUnique({
     where: { id: customerId },
     include: {
@@ -49,6 +51,7 @@ const serviceSchema = z.object({
 });
 
 export async function addService(customerId: string, formData: FormData) {
+  await requireAdmin();
   const rawData = {
     serviceType: formData.get("serviceType"),
     installationDate: formData.get("installationDate"),
@@ -104,6 +107,7 @@ const amcSchema = z.object({
 });
 
 export async function createAMC(customerId: string, formData: FormData) {
+  await requireAdmin();
   const rawData = {
     serviceId: formData.get("serviceId"),
     startDate: formData.get("startDate"),
@@ -148,6 +152,7 @@ const complaintSchema = z.object({
 });
 
 export async function logComplaint(customerId: string, formData: FormData) {
+  await requireAdmin();
   const rawData = {
     serviceId: formData.get("serviceId"),
     description: formData.get("description"),
@@ -178,6 +183,7 @@ const paymentSchema = z.object({
 });
 
 export async function recordPayment(customerId: string, formData: FormData) {
+  await requireAdmin();
   const rawData = {
     amount: formData.get("amount"),
     paymentMode: formData.get("paymentMode"),

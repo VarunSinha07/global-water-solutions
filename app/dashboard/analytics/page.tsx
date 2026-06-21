@@ -1,10 +1,10 @@
 import { getMonthlyRevenue } from "@/app/dashboard/actions";
-import { OverviewChart } from "@/components/dashboard/overview-chart";
 import {
   getComplaintsByStatus,
   getAMCsByStatus,
   getServiceTypesDistribution,
 } from "./actions";
+import { OverviewChart } from "@/components/dashboard/overview-chart";
 import { ComplaintsChart } from "@/components/analytics/complaints-chart";
 import { AMCStatusChart } from "@/components/analytics/amc-status-chart";
 import { ServiceTypesChart } from "@/components/analytics/service-types-chart";
@@ -46,7 +46,7 @@ export default async function AnalyticsPage() {
       </div>
 
       {/* Hero Chart - Revenue Analytics */}
-      <div className="w-full h-[450px]">
+      <div className="w-full h-[380px] md:h-[450px]">
         <OverviewChart data={revenueData} />
       </div>
 

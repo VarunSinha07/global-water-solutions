@@ -4,6 +4,8 @@ import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { requireAdmin } from "@/lib/auth-utils";
+import { PlantCategory, ServicePaymentStatus, Prisma } from "@/generated/prisma/client";
 
 const createCustomerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -23,6 +25,7 @@ const createCustomerSchema = z.object({
 });
 
 export async function createCustomer(formData: FormData) {
+  await requireAdmin();
   const rawData = {
     name: formData.get("name"),
     address: formData.get("address"),
@@ -58,11 +61,11 @@ export async function createCustomer(formData: FormData) {
           : null,
         warrantyPeriod: validatedData.data.warrantyPeriod || null,
         plantModelName: validatedData.data.plantModelName || null,
-        plantCategory: (validatedData.data.plantCategory as any) || null,
+        plantCategory: (validatedData.data.plantCategory as PlantCategory) || null,
         plantCost: validatedData.data.plantCost || null,
         paymentMode: validatedData.data.paymentMode || null,
         emi: validatedData.data.emi || null,
-        paymentStatus: (validatedData.data.paymentStatus as any) || null,
+        paymentStatus: (validatedData.data.paymentStatus as ServicePaymentStatus) || null,
       },
     });
   } catch (e) {
@@ -77,7 +80,8 @@ export async function createCustomer(formData: FormData) {
 }
 
 export async function getCustomers(query?: string, sort?: string) {
-  let orderBy: any = { createdAt: "desc" };
+  await requireAdmin();
+  let orderBy: Prisma.CustomerOrderByWithRelationInput = { createdAt: "desc" };
 
   if (sort === "name_asc") {
     orderBy = { name: "asc" };

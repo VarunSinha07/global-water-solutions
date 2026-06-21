@@ -142,7 +142,7 @@ export function FilterDialog({ filters }: FilterDialogProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[85vh]">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] md:max-h-[85vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
           <h3 className="text-lg font-semibold text-gray-900 flex items-center">
@@ -158,15 +158,15 @@ export function FilterDialog({ filters }: FilterDialogProps) {
         </div>
 
         {/* Body */}
-        <div className="flex flex-1 overflow-hidden">
-          {/* Sidebar */}
-          <div className="w-1/3 bg-gray-50 border-r border-gray-100 overflow-y-auto">
-            <div className="p-2 space-y-1">
+        <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
+          {/* Sidebar (Tabs) */}
+          <div className="w-full md:w-1/3 bg-gray-50 border-b md:border-b-0 md:border-r border-gray-100 overflow-y-auto shrink-0">
+            <div className="p-2 flex md:flex-col overflow-x-auto md:overflow-x-visible gap-1.5 md:space-y-1 no-scrollbar">
               {filters.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => setSelectedCategory(category.id)}
-                  className={`w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors flex justify-between items-center ${
+                  className={`w-auto md:w-full text-left px-4 py-2.5 md:py-3 rounded-lg text-sm font-medium transition-colors flex justify-between items-center gap-4 shrink-0 whitespace-nowrap ${
                     selectedCategory === category.id
                       ? "bg-white text-indigo-600 shadow-sm border border-gray-100"
                       : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
@@ -176,7 +176,7 @@ export function FilterDialog({ filters }: FilterDialogProps) {
                   {(localFilters[category.id] ||
                     localFilters[`${category.id}Start`] ||
                     localFilters[`${category.id}Min`]) && (
-                    <div className="h-2 w-2 rounded-full bg-indigo-600"></div>
+                    <div className="h-2 w-2 rounded-full bg-indigo-600 shrink-0"></div>
                   )}
                 </button>
               ))}
@@ -184,7 +184,7 @@ export function FilterDialog({ filters }: FilterDialogProps) {
           </div>
 
           {/* Content Area */}
-          <div className="w-2/3 p-6 overflow-y-auto bg-white">
+          <div className="w-full md:w-2/3 p-6 overflow-y-auto bg-white">
             <div className="space-y-6">
               <h4 className="font-medium text-lg text-gray-900 mb-4">
                 {currentCategoryConfig.label}

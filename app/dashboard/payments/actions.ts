@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { PaymentStatus } from "@/generated/prisma/client";
+import { requireAdmin } from "@/lib/auth-utils";
 
 const paymentSchema = z.object({
   customerId: z.string().min(1, "Customer is required"),
@@ -16,6 +17,7 @@ const paymentSchema = z.object({
 });
 
 export async function createPayment(formData: FormData) {
+  await requireAdmin();
   try {
     const data = {
       customerId: formData.get("customerId") as string,

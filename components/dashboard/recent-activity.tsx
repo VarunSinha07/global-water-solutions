@@ -75,7 +75,7 @@ export function RecentActivity({ activities }: RecentActivityProps) {
             key={activity.id}
             className="group relative flex items-center justify-between p-3.5 rounded-2xl bg-white/40 border border-transparent transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] hover:bg-white/80 hover:border-white hover:shadow-[0_8px_20px_rgba(0,0,0,0.03)] hover:scale-[1.015] hover:-translate-y-0.5 active:scale-[0.98] cursor-pointer"
           >
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 flex-1 min-w-0">
               {/* Dynamic Icon Container */}
               <div
                 className={cn(

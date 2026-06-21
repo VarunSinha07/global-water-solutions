@@ -4,15 +4,10 @@ import { prisma } from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { requireAdmin } from "@/lib/auth-utils";
 
 export async function updateProfile(prevState: unknown, formData: FormData) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!session) {
-    return { error: "Unauthorized" };
-  }
+  const session = await requireAdmin();
 
   const name = formData.get("name") as string;
   // email is usually read-only or requires verification flow, sticking to read-only as per typical "Profile Info" simple forms,

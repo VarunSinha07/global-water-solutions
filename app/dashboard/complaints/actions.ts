@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ComplaintStatus } from "@/generated/prisma/client";
+import { requireAdmin } from "@/lib/auth-utils";
 
 const complaintSchema = z.object({
   customerId: z.string().min(1, "Customer is required"),
@@ -16,6 +17,7 @@ const complaintSchema = z.object({
 });
 
 export async function createComplaint(formData: FormData) {
+  await requireAdmin();
   try {
     const data = {
       customerId: formData.get("customerId") as string,
