@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/db";
 import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
+import { revalidateTag, unstable_cache } from "next/cache";
 
 export type Notification = {
   id: string;
@@ -13,6 +14,17 @@ export type Notification = {
   createdAt: Date;
 };
 
+const getCachedUserNotifications = unstable_cache(
+  async (userId: string) => {
+    return prisma.notification.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+    });
+  },
+  ["user-notifications-data"],
+  { tags: ["notifications"] }
+);
+
 export async function getUserNotifications() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -20,10 +32,7 @@ export async function getUserNotifications() {
 
   if (!session) return [];
 
-  return prisma.notification.findMany({
-    where: { userId: session.user.id },
-    orderBy: { createdAt: "desc" },
-  });
+  return getCachedUserNotifications(session.user.id);
 }
 
 export async function markNotificationAsRead(id: string) {
@@ -38,6 +47,7 @@ export async function markNotificationAsRead(id: string) {
     data: { isRead: true },
   });
 
+  revalidateTag("notifications", "max");
   return { success: true };
 }
 
@@ -53,6 +63,7 @@ export async function markAllNotificationsAsRead() {
     data: { isRead: true },
   });
 
+  revalidateTag("notifications", "max");
   return { success: true };
 }
 
@@ -132,6 +143,7 @@ export async function checkAndCreateServiceNotifications() {
     await prisma.notification.createMany({
       data: newNotificationsData,
     });
+    revalidateTag("notifications", "max");
   }
 
   console.log(`✅ Created ${newNotificationsData.length} new notifications`);
@@ -223,6 +235,7 @@ export async function checkAndCreateContractExpiryNotifications() {
     await prisma.notification.createMany({
       data: newNotificationsData,
     });
+    revalidateTag("notifications", "max");
   }
 
   console.log(
@@ -381,6 +394,10 @@ export async function markServiceAsServiced(serviceId: string) {
       },
     },
   });
+
+  revalidateTag("services", "max");
+  revalidateTag("dashboard-stats", "max");
+  revalidateTag("notifications", "max");
 
   return {
     success: true,

@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { PaymentStatus } from "@/generated/prisma/client";
@@ -56,6 +56,10 @@ export async function createPayment(formData: FormData) {
     };
   }
 
+  revalidateTag("payments", "max");
+  revalidateTag("dashboard-stats", "max");
+  revalidateTag("customers", "max");
+  revalidateTag("amcs", "max");
   revalidatePath("/dashboard/payments");
   redirect("/dashboard/payments");
 }

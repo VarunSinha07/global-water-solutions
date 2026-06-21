@@ -11,12 +11,18 @@ import {
   FileText,
   Plus,
   AlertCircle,
+  AlertTriangle,
   CheckCircle,
   Clock,
   CreditCard,
+  Trash2,
+  Loader2,
 } from "lucide-react";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
+import { deleteCustomer } from "./actions";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 // Types matching the Prisma output
 type CustomerDetail = {
@@ -63,9 +69,37 @@ type CustomerDetail = {
 };
 
 export default function ClientPage({ customer }: { customer: CustomerDetail }) {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState<
     "services" | "payments" | "complaints"
   >("services");
+
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [confirmName, setConfirmName] = useState("");
+  const [isPending, startTransition] = useTransition();
+
+  const handleDelete = () => {
+    if (confirmName !== customer.name) {
+      toast.error("Customer name does not match.");
+      return;
+    }
+
+    startTransition(async () => {
+      try {
+        const result = await deleteCustomer(customer.id);
+        if (result && "error" in result) {
+          toast.error(result.error);
+        } else {
+          toast.success("Customer deleted successfully.");
+          setShowDeleteModal(false);
+          router.push("/dashboard/customers");
+        }
+      } catch (error) {
+        toast.error("An unexpected error occurred.");
+        console.error(error);
+      }
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -92,6 +126,13 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
         <div className="flex gap-2">
           <button className="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 active:scale-[0.98]">
             Edit Profile
+          </button>
+          <button
+            onClick={() => setShowDeleteModal(true)}
+            className="inline-flex items-center justify-center rounded-xl border border-red-200 bg-red-50 px-4 py-2 text-sm font-medium text-red-700 shadow-sm transition-all hover:bg-red-100 hover:text-red-900 focus:outline-none focus:ring-2 focus:ring-red-500/20 active:scale-[0.98]"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Delete Customer
           </button>
         </div>
       </div>
@@ -640,6 +681,77 @@ export default function ClientPage({ customer }: { customer: CustomerDetail }) {
           </div>
         </div>
       </div>
+
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm transition-opacity animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-2xl p-6 max-w-md w-full scale-100 animate-in fade-in zoom-in-95 duration-200">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-red-50 text-red-600">
+                <AlertTriangle className="h-6 w-6" />
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-gray-900">Delete Customer</h3>
+                <p className="text-sm text-gray-500">This action cannot be undone.</p>
+              </div>
+            </div>
+
+            <div className="space-y-4">
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Deleting <strong className="text-gray-900">{customer.name}</strong> will permanently remove all associated:
+              </p>
+              <ul className="list-disc list-inside text-xs text-gray-500 space-y-1 bg-gray-50 p-3 rounded-xl border border-gray-100">
+                <li>Service records and service cycles</li>
+                <li>AMC contracts & status details</li>
+                <li>Payment logs and financial transactions</li>
+                <li>Open and resolved complaints</li>
+              </ul>
+              
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-gray-700">
+                  Type <span className="font-semibold text-gray-900 select-all">{customer.name}</span> to confirm:
+                </label>
+                <input
+                  type="text"
+                  value={confirmName}
+                  onChange={(e) => setConfirmName(e.target.value)}
+                  placeholder="Enter customer name"
+                  className="block w-full rounded-xl border border-gray-200 bg-gray-50/50 py-2.5 px-4 text-sm font-medium text-gray-900 placeholder:text-gray-400 focus:border-red-500 focus:bg-white focus:outline-none focus:ring-4 focus:ring-red-500/10 transition-all"
+                  disabled={isPending}
+                />
+              </div>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowDeleteModal(false);
+                    setConfirmName("");
+                  }}
+                  disabled={isPending}
+                  className="flex-1 inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 shadow-sm transition-all hover:bg-gray-50 hover:text-gray-900 disabled:opacity-50"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleDelete}
+                  disabled={confirmName !== customer.name || isPending}
+                  className="flex-1 inline-flex items-center justify-center rounded-xl bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition-all hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {isPending ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Deleting...
+                    </>
+                  ) : (
+                    "Delete Customer"
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

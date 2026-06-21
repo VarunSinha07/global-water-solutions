@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { $Enums } from "@/generated/prisma/client";
@@ -102,6 +102,10 @@ export async function createService(formData: FormData) {
     };
   }
 
+  revalidateTag("services", "max");
+  revalidateTag("customers", "max");
+  revalidateTag("dashboard-stats", "max");
+  revalidateTag("payments", "max");
   revalidatePath("/dashboard/services");
   revalidatePath("/dashboard");
   redirect("/dashboard/services");
@@ -122,11 +126,8 @@ export async function updateService(serviceId: string, formData: FormData) {
     if (!existing) return { error: "Service not found" };
  
     if (existing.status === $Enums.ServiceStatus.COMPLETED) {
-      // If already completed, maybe only allow some changes or block?
-      // Based on user: completion date and payment details remain editable *until* the service is completed.
-      // We'll enforce this safely but also let it be updated from UI.
       if (status !== $Enums.ServiceStatus.COMPLETED) {
-        // allow unlocking maybe? Usually "editable until completed" means frontend disables forms, we'll just process it anyway
+        // allow unlocking
       }
     }
  
@@ -170,6 +171,10 @@ export async function updateService(serviceId: string, formData: FormData) {
       },
     });
 
+    revalidateTag("services", "max");
+    revalidateTag("customers", "max");
+    revalidateTag("dashboard-stats", "max");
+    revalidateTag("payments", "max");
     revalidatePath(`/dashboard/services`);
     revalidatePath(`/dashboard/services/${serviceId}`);
     revalidatePath(`/dashboard/customers/${existing.customerId}`);

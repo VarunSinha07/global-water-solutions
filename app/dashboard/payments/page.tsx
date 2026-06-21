@@ -5,6 +5,83 @@ import Link from "next/link";
 import { SearchInput } from "@/components/ui/search-input";
 import { FilterDialog, FilterCategory } from "@/components/ui/filter-dialog";
 import type { Prisma } from "@/generated/prisma/client";
+import { unstable_cache } from "next/cache";
+
+interface PaymentsCacheParams {
+  query?: string;
+  statusParam?: string;
+  modeParam?: string;
+  dateStart?: string;
+  dateEnd?: string;
+  amountMin?: number;
+  amountMax?: number;
+}
+
+const getCachedPayments = unstable_cache(
+  async (params: PaymentsCacheParams) => {
+    const {
+      query,
+      statusParam,
+      modeParam,
+      dateStart,
+      dateEnd,
+      amountMin,
+      amountMax,
+    } = params;
+
+    const andConditions: Prisma.PaymentWhereInput[] = [
+      query
+        ? {
+            customer: { name: { contains: query, mode: "insensitive" } },
+          }
+        : {},
+    ];
+
+    if (statusParam) {
+      andConditions.push({
+        status: statusParam as "PAID" | "PENDING" | "FAILED",
+      });
+    }
+
+    if (modeParam) {
+      andConditions.push({
+        paymentMode: { contains: modeParam, mode: "insensitive" },
+      });
+    }
+
+    if (dateStart || dateEnd) {
+      andConditions.push({
+        paymentDate: {
+          gte: dateStart ? new Date(dateStart) : undefined,
+          lte: dateEnd ? new Date(dateEnd) : undefined,
+        },
+      });
+    }
+
+    if (amountMin !== undefined || amountMax !== undefined) {
+      andConditions.push({
+        amount: {
+          gte: amountMin,
+          lte: amountMax,
+        },
+      });
+    }
+
+    return await prisma.payment.findMany({
+      where: {
+        AND: andConditions,
+      },
+      include: {
+        customer: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  },
+  ["payments-list-data"],
+  { tags: ["payments"] }
+);
 
 export default async function PaymentsPage({
   searchParams,
@@ -24,66 +101,20 @@ export default async function PaymentsPage({
   const modeParam = (await searchParams)?.mode || "";
 
   const dateStartString = (await searchParams)?.dateStart;
-  const dateStart = dateStartString ? new Date(dateStartString) : undefined;
   const dateEndString = (await searchParams)?.dateEnd;
-  const dateEnd = dateEndString ? new Date(dateEndString) : undefined;
   const amountMinString = (await searchParams)?.amountMin;
   const amountMin = amountMinString ? parseFloat(amountMinString) : undefined;
   const amountMaxString = (await searchParams)?.amountMax;
   const amountMax = amountMaxString ? parseFloat(amountMaxString) : undefined;
 
-  const andConditions: Prisma.PaymentWhereInput[] = [
-    query
-      ? {
-          customer: { name: { contains: query, mode: "insensitive" } },
-        }
-      : {},
-  ];
-
-  if (statusParam) {
-    andConditions.push({
-      status: statusParam as "PAID" | "PENDING" | "FAILED",
-    });
-  }
-
-  if (modeParam) {
-    // If mode is one of the options, we match exactly (insensitive)
-    // or if it's text search, contains
-    andConditions.push({
-      paymentMode: { contains: modeParam, mode: "insensitive" },
-    });
-  }
-
-  if (dateStart || dateEnd) {
-    andConditions.push({
-      paymentDate: {
-        gte: dateStart,
-        lte: dateEnd,
-      },
-    });
-  }
-
-  if (amountMin !== undefined || amountMax !== undefined) {
-    andConditions.push({
-      amount: {
-        gte: amountMin,
-        lte: amountMax,
-      },
-    });
-  }
-
-  const whereClause: Prisma.PaymentWhereInput = {
-    AND: andConditions,
-  };
-
-  const payments = await prisma.payment.findMany({
-    where: whereClause,
-    include: {
-      customer: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+  const payments = await getCachedPayments({
+    query,
+    statusParam,
+    modeParam,
+    dateStart: dateStartString,
+    dateEnd: dateEndString,
+    amountMin,
+    amountMax,
   });
 
   const totalCollected = payments

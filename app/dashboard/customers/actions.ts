@@ -1,11 +1,12 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-utils";
 import { PlantCategory, ServicePaymentStatus, Prisma } from "@/generated/prisma/client";
+import { unstable_cache } from "next/cache";
 
 const createCustomerSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -75,35 +76,45 @@ export async function createCustomer(formData: FormData) {
     };
   }
 
+  revalidateTag("customers", "max");
+  revalidateTag("dashboard-stats", "max");
   revalidatePath("/dashboard/customers");
   redirect("/dashboard/customers");
 }
 
+const getCachedCustomers = unstable_cache(
+  async (query?: string, sort?: string) => {
+    let orderBy: Prisma.CustomerOrderByWithRelationInput = { createdAt: "desc" };
+
+    if (sort === "name_asc") {
+      orderBy = { name: "asc" };
+    } else if (sort === "name_desc") {
+      orderBy = { name: "desc" };
+    }
+
+    return await prisma.customer.findMany({
+      where: query
+        ? {
+            OR: [
+              { name: { contains: query, mode: "insensitive" } },
+              { phone: { contains: query, mode: "insensitive" } },
+              { address: { contains: query, mode: "insensitive" } },
+            ],
+          }
+        : undefined,
+      orderBy: orderBy,
+      include: {
+        _count: {
+          select: { services: true, amcs: true },
+        },
+      },
+    });
+  },
+  ["customers-list-data"],
+  { tags: ["customers"] }
+);
+
 export async function getCustomers(query?: string, sort?: string) {
   await requireAdmin();
-  let orderBy: Prisma.CustomerOrderByWithRelationInput = { createdAt: "desc" };
-
-  if (sort === "name_asc") {
-    orderBy = { name: "asc" };
-  } else if (sort === "name_desc") {
-    orderBy = { name: "desc" };
-  }
-
-  return await prisma.customer.findMany({
-    where: query
-      ? {
-          OR: [
-            { name: { contains: query, mode: "insensitive" } },
-            { phone: { contains: query, mode: "insensitive" } },
-            { address: { contains: query, mode: "insensitive" } },
-          ],
-        }
-      : undefined,
-    orderBy: orderBy,
-    include: {
-      _count: {
-        select: { services: true, amcs: true },
-      },
-    },
-  });
+  return getCachedCustomers(query, sort);
 }

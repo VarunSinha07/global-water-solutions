@@ -2,47 +2,57 @@
 
 import { prisma } from "@/lib/db";
 import { $Enums } from "@/generated/prisma/client";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { redirect } from "next/navigation";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth-utils";
+import { unstable_cache } from "next/cache";
+
+const getCachedCustomerDetails = unstable_cache(
+  async (customerId: string) => {
+    const customer = await prisma.customer.findUnique({
+      where: { id: customerId },
+      include: {
+        services: {
+          include: {
+            amcContracts: true,
+            technician: {
+              select: { name: true },
+            },
+            complaints: {
+              where: { status: { not: "RESOLVED" } },
+            },
+          },
+          orderBy: { serviceRegisterDate: "desc" },
+        },
+        payments: {
+          orderBy: { createdAt: "desc" },
+          take: 10,
+        },
+        complaints: {
+          orderBy: { createdAt: "desc" },
+          include: {
+            technician: {
+              select: { name: true },
+            },
+          },
+        },
+      },
+    });
+
+    if (!customer) {
+      return null;
+    }
+
+    return customer;
+  },
+  ["customer-details-data"],
+  { tags: ["customers"] }
+);
 
 export async function getCustomerDetails(customerId: string) {
   await requireAdmin();
-  const customer = await prisma.customer.findUnique({
-    where: { id: customerId },
-    include: {
-      services: {
-        include: {
-          amcContracts: true,
-          technician: {
-            select: { name: true },
-          },
-          complaints: {
-            where: { status: { not: "RESOLVED" } }, // Open complaints count/preview
-          },
-        },
-        orderBy: { serviceRegisterDate: "desc" },
-      },
-      payments: {
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      },
-      complaints: {
-        orderBy: { createdAt: "desc" },
-        include: {
-          technician: {
-            select: { name: true },
-          },
-        },
-      },
-    },
-  });
-
-  if (!customer) {
-    return null;
-  }
-
-  return customer;
+  return getCachedCustomerDetails(customerId);
 }
 
 const serviceSchema = z.object({
@@ -91,11 +101,14 @@ export async function addService(customerId: string, formData: FormData) {
       customerId,
       serviceType: validated.data.serviceType,
       serviceRegisterDate: validated.data.installationDate,
-      nextServiceDueDate: nextDueDate, // Explictly set based on installation date
+      nextServiceDueDate: nextDueDate,
       status: $Enums.ServiceStatus.PENDING,
     },
   });
 
+  revalidateTag("services", "max");
+  revalidateTag("customers", "max");
+  revalidateTag("dashboard-stats", "max");
   revalidatePath(`/dashboard/customers/${customerId}`);
   return { success: true };
 }
@@ -142,6 +155,9 @@ export async function createAMC(customerId: string, formData: FormData) {
     },
   });
 
+  revalidateTag("amcs", "max");
+  revalidateTag("customers", "max");
+  revalidateTag("dashboard-stats", "max");
   revalidatePath(`/dashboard/customers/${customerId}`);
   return { success: true };
 }
@@ -172,6 +188,9 @@ export async function logComplaint(customerId: string, formData: FormData) {
     },
   });
 
+  revalidateTag("complaints", "max");
+  revalidateTag("customers", "max");
+  revalidateTag("dashboard-stats", "max");
   revalidatePath(`/dashboard/customers/${customerId}`);
   return { success: true };
 }
@@ -211,6 +230,61 @@ export async function recordPayment(customerId: string, formData: FormData) {
     },
   });
 
+  revalidateTag("payments", "max");
+  revalidateTag("customers", "max");
+  revalidateTag("dashboard-stats", "max");
   revalidatePath(`/dashboard/customers/${customerId}`);
   return { success: true };
+}
+
+export async function deleteCustomer(customerId: string) {
+  await requireAdmin();
+
+  let success = false;
+  try {
+    await prisma.$transaction(async (tx) => {
+      // 1. Find all payments of the customer
+      const payments = await tx.payment.findMany({
+        where: { customerId },
+        select: { id: true },
+      });
+      const paymentIds = payments.map((p) => p.id);
+
+      // 2. Delete all FinanceLogs linked to the customer's payments
+      if (paymentIds.length > 0) {
+        await tx.financeLog.deleteMany({
+          where: { referenceId: { in: paymentIds } },
+        });
+      }
+
+      // 3. Delete all Payments
+      await tx.payment.deleteMany({ where: { customerId } });
+
+      // 4. Delete all Complaints
+      await tx.complaint.deleteMany({ where: { customerId } });
+
+      // 5. Delete all AMC contracts
+      await tx.aMCContract.deleteMany({ where: { customerId } });
+
+      // 6. Delete all Services
+      await tx.service.deleteMany({ where: { customerId } });
+
+      // 7. Delete the Customer
+      await tx.customer.delete({ where: { id: customerId } });
+    });
+
+    // Revalidate Next.js Server Caches
+    revalidateTag("customers", "max");
+    revalidateTag("amcs", "max");
+    revalidateTag("payments", "max");
+    revalidateTag("complaints", "max");
+    revalidateTag("services", "max");
+    revalidateTag("dashboard-stats", "max");
+    revalidatePath("/dashboard/customers");
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to delete customer:", error);
+    return { error: "Failed to delete customer. Please try again." };
+  }
 }

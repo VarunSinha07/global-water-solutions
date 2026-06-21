@@ -12,6 +12,63 @@ import { ServicesTable, type ServiceWithCustomer } from "@/components/dashboard/
 import { SearchInput } from "@/components/ui/search-input";
 import { FilterDialog, FilterCategory } from "@/components/ui/filter-dialog";
 import { Prisma } from "@/generated/prisma/client";
+import { unstable_cache } from "next/cache";
+
+interface ServicesCacheParams {
+  query?: string;
+  sort?: string;
+  typeFilter?: string;
+  statusFilter?: string;
+}
+
+const getCachedServices = unstable_cache(
+  async (params: ServicesCacheParams) => {
+    const { query, sort, typeFilter, statusFilter } = params;
+
+    const where: Prisma.ServiceWhereInput = { AND: [] };
+
+    if (query) {
+      (where.AND as Prisma.ServiceWhereInput[]).push({
+        OR: [
+          { serviceType: { contains: query, mode: "insensitive" } },
+          { customer: { name: { contains: query, mode: "insensitive" } } },
+        ],
+      });
+    }
+    if (typeFilter) {
+      (where.AND as Prisma.ServiceWhereInput[]).push({
+        serviceType: { contains: typeFilter, mode: "insensitive" },
+      });
+    }
+    if (statusFilter === "active") {
+      (where.AND as Prisma.ServiceWhereInput[]).push({
+        amcContracts: { some: { status: "ACTIVE" } },
+      });
+    } else if (statusFilter === "inactive") {
+      (where.AND as Prisma.ServiceWhereInput[]).push({
+        amcContracts: { none: { status: "ACTIVE" } },
+      });
+    }
+
+    let orderBy: Prisma.ServiceOrderByWithRelationInput = {
+      id: "desc",
+    };
+    if (sort === "date_asc") orderBy = { id: "asc" };
+    if (sort === "date_desc") orderBy = { id: "desc" };
+
+    return await prisma.service.findMany({
+      where,
+      include: {
+        customer: true,
+        technician: true,
+        _count: { select: { amcContracts: true, complaints: true } },
+      },
+      orderBy,
+    });
+  },
+  ["services-list-data"],
+  { tags: ["services"] }
+);
 
 export default async function ServicesPage({
   searchParams,
@@ -28,45 +85,11 @@ export default async function ServicesPage({
   const typeFilter = (await searchParams)?.type || "";
   const statusFilter = (await searchParams)?.status || "";
 
-  const where: Prisma.ServiceWhereInput = { AND: [] };
-
-  if (query) {
-    (where.AND as Prisma.ServiceWhereInput[]).push({
-      OR: [
-        { serviceType: { contains: query, mode: "insensitive" } },
-        { customer: { name: { contains: query, mode: "insensitive" } } },
-      ],
-    });
-  }
-  if (typeFilter) {
-    (where.AND as Prisma.ServiceWhereInput[]).push({
-      serviceType: { contains: typeFilter, mode: "insensitive" },
-    });
-  }
-  if (statusFilter === "active") {
-    (where.AND as Prisma.ServiceWhereInput[]).push({
-      amcContracts: { some: { status: "ACTIVE" } },
-    });
-  } else if (statusFilter === "inactive") {
-    (where.AND as Prisma.ServiceWhereInput[]).push({
-      amcContracts: { none: { status: "ACTIVE" } },
-    });
-  }
-
-  let orderBy: Prisma.ServiceOrderByWithRelationInput = {
-    id: "desc",
-  };
-  if (sort === "date_asc") orderBy = { id: "asc" };
-  if (sort === "date_desc") orderBy = { id: "desc" };
-
-  const services = await prisma.service.findMany({
-    where,
-    include: {
-      customer: true,
-      technician: true,
-      _count: { select: { amcContracts: true, complaints: true } },
-    },
-    orderBy,
+  const services = await getCachedServices({
+    query,
+    sort,
+    typeFilter,
+    statusFilter,
   });
 
   const serviceFilters: FilterCategory[] = [

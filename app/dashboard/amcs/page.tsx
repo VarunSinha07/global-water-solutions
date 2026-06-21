@@ -6,6 +6,112 @@ import { SearchInput } from "@/components/ui/search-input";
 import { FilterDialog, FilterCategory } from "@/components/ui/filter-dialog";
 import { addDays } from "date-fns";
 import { AMCStatus, type Prisma } from "@/generated/prisma/client";
+import { unstable_cache } from "next/cache";
+
+interface AMCsCacheParams {
+  query?: string;
+  statusParam?: string;
+  startDateStart?: string;
+  startDateEnd?: string;
+  endDateStart?: string;
+  endDateEnd?: string;
+  amountMin?: number;
+  amountMax?: number;
+  modelQuery?: string;
+}
+
+const getCachedAMCs = unstable_cache(
+  async (params: AMCsCacheParams) => {
+    const {
+      query,
+      statusParam,
+      startDateStart,
+      startDateEnd,
+      endDateStart,
+      endDateEnd,
+      amountMin,
+      amountMax,
+      modelQuery,
+    } = params;
+
+    const whereClause: Prisma.AMCContractWhereInput = {};
+    const andConditions: Prisma.AMCContractWhereInput[] = [];
+
+    if (query) {
+      andConditions.push({
+        customer: {
+          name: { contains: query, mode: "insensitive" as const },
+        },
+      });
+    }
+
+    if (statusParam === "expiring_soon") {
+      const today = new Date();
+      const thirtyDaysLater = addDays(today, 30);
+      andConditions.push({
+        status: "ACTIVE",
+        endDate: {
+          gte: today,
+          lte: thirtyDaysLater,
+        },
+      });
+    } else if (statusParam) {
+      andConditions.push({ status: statusParam as AMCStatus });
+    }
+
+    if (startDateStart || startDateEnd) {
+      andConditions.push({
+        startDate: {
+          gte: startDateStart ? new Date(startDateStart) : undefined,
+          lte: startDateEnd ? new Date(startDateEnd) : undefined,
+        },
+      });
+    }
+    if (endDateStart || endDateEnd) {
+      andConditions.push({
+        endDate: {
+          gte: endDateStart ? new Date(endDateStart) : undefined,
+          lte: endDateEnd ? new Date(endDateEnd) : undefined,
+        },
+      });
+    }
+
+    if (amountMin !== undefined || amountMax !== undefined) {
+      andConditions.push({
+        amount: {
+          gte: amountMin,
+          lte: amountMax,
+        },
+      });
+    }
+
+    if (modelQuery) {
+      andConditions.push({
+        service: {
+          serviceType: { contains: modelQuery, mode: "insensitive" },
+        },
+      });
+    }
+
+    if (andConditions.length > 0) {
+      whereClause.AND = andConditions;
+    }
+
+    return await prisma.aMCContract.findMany({
+      where: whereClause,
+      include: {
+        customer: true,
+        service: true,
+        payments: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  },
+  ["amcs-list-data"],
+  { tags: ["amcs"] }
+);
 
 export default async function AMCContractsPage({
   searchParams,
@@ -27,13 +133,9 @@ export default async function AMCContractsPage({
 
   // Date Filters
   const startDateStartString = (await searchParams)?.startDateStart;
-  const startDateStart = startDateStartString ? new Date(startDateStartString) : undefined;
   const startDateEndString = (await searchParams)?.startDateEnd;
-  const startDateEnd = startDateEndString ? new Date(startDateEndString) : undefined;
   const endDateStartString = (await searchParams)?.endDateStart;
-  const endDateStart = endDateStartString ? new Date(endDateStartString) : undefined;
   const endDateEndString = (await searchParams)?.endDateEnd;
-  const endDateEnd = endDateEndString ? new Date(endDateEndString) : undefined;
 
   // Amount Filters
   const amountMinString = (await searchParams)?.amountMin;
@@ -44,84 +146,16 @@ export default async function AMCContractsPage({
   // Model Filter
   const modelQuery = (await searchParams)?.model || "";
 
-  const whereClause: Prisma.AMCContractWhereInput = {};
-  const andConditions: Prisma.AMCContractWhereInput[] = [];
-
-  if (query) {
-    andConditions.push({
-      customer: {
-        name: { contains: query, mode: "insensitive" as const },
-      },
-    });
-  }
-
-  // Status Filter Logic
-  if (statusParam === "expiring_soon") {
-    const today = new Date();
-    const thirtyDaysLater = addDays(today, 30);
-    andConditions.push({
-      status: "ACTIVE",
-      endDate: {
-        gte: today,
-        lte: thirtyDaysLater,
-      },
-    });
-  } else if (statusParam) {
-    // Handles ACTIVE, EXPIRED, PENDING_PAYMENT
-    andConditions.push({ status: statusParam as AMCStatus });
-  }
-
-  // Date Range Logic
-  if (startDateStart || startDateEnd) {
-    andConditions.push({
-      startDate: {
-        gte: startDateStart,
-        lte: startDateEnd,
-      },
-    });
-  }
-  if (endDateStart || endDateEnd) {
-    andConditions.push({
-      endDate: {
-        gte: endDateStart,
-        lte: endDateEnd,
-      },
-    });
-  }
-
-  // Amount Logic
-  if (amountMin !== undefined || amountMax !== undefined) {
-    andConditions.push({
-      amount: {
-        gte: amountMin,
-        lte: amountMax,
-      },
-    });
-  }
-
-  // Model/Capacity Logic (Service Type)
-  if (modelQuery) {
-    andConditions.push({
-      service: {
-        serviceType: { contains: modelQuery, mode: "insensitive" },
-      },
-    });
-  }
-
-  if (andConditions.length > 0) {
-    whereClause.AND = andConditions;
-  }
-
-  const amcs = await prisma.aMCContract.findMany({
-    where: whereClause,
-    include: {
-      customer: true,
-      service: true,
-      payments: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+  const amcs = await getCachedAMCs({
+    query,
+    statusParam,
+    startDateStart: startDateStartString,
+    startDateEnd: startDateEndString,
+    endDateStart: endDateStartString,
+    endDateEnd: endDateEndString,
+    amountMin,
+    amountMax,
+    modelQuery,
   });
 
   const amcFilters: FilterCategory[] = [

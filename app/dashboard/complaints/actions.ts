@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/db";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { ComplaintStatus } from "@/generated/prisma/client";
@@ -47,6 +47,9 @@ export async function createComplaint(formData: FormData) {
     };
   }
 
+  revalidateTag("complaints", "max");
+  revalidateTag("dashboard-stats", "max");
+  revalidateTag("customers", "max");
   revalidatePath("/dashboard/complaints");
   redirect("/dashboard/complaints");
 }

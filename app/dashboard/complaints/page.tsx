@@ -6,6 +6,63 @@ import Link from "next/link";
 import { SearchInput } from "@/components/ui/search-input";
 import { FilterDialog, FilterCategory } from "@/components/ui/filter-dialog";
 import { ComplaintStatus } from "@/generated/prisma/client";
+import { unstable_cache } from "next/cache";
+
+interface ComplaintsCacheParams {
+  query?: string;
+  statusParam?: string;
+  startDateStart?: string;
+  startDateEnd?: string;
+}
+
+const getCachedComplaints = unstable_cache(
+  async (params: ComplaintsCacheParams) => {
+    const { query, statusParam, startDateStart, startDateEnd } = params;
+
+    const whereClause: Prisma.ComplaintWhereInput = {
+      AND: [
+        query
+          ? {
+              OR: [
+                {
+                  customer: { name: { contains: query, mode: "insensitive" } },
+                },
+                { description: { contains: query, mode: "insensitive" } },
+              ],
+            }
+          : {},
+      ],
+    };
+
+    if (statusParam) {
+      (whereClause.AND as Prisma.ComplaintWhereInput[]).push({
+        status: statusParam as ComplaintStatus,
+      });
+    }
+
+    if (startDateStart || startDateEnd) {
+      (whereClause.AND as Prisma.ComplaintWhereInput[]).push({
+        createdAt: {
+          gte: startDateStart ? new Date(startDateStart) : undefined,
+          lte: startDateEnd ? new Date(startDateEnd) : undefined,
+        },
+      });
+    }
+
+    return await prisma.complaint.findMany({
+      where: whereClause,
+      include: {
+        customer: true,
+        service: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+  },
+  ["complaints-list-data"],
+  { tags: ["complaints"] }
+);
 
 export default async function ComplaintsPage({
   searchParams,
@@ -21,53 +78,13 @@ export default async function ComplaintsPage({
   const statusParam = (await searchParams)?.status || "";
 
   const startDateStartString = (await searchParams)?.startDateStart;
-  const startDateStart = startDateStartString
-    ? new Date(startDateStartString)
-    : undefined;
   const startDateEndString = (await searchParams)?.startDateEnd;
-  const startDateEnd = startDateEndString
-    ? new Date(startDateEndString)
-    : undefined;
 
-  const whereClause: Prisma.ComplaintWhereInput = {
-    AND: [
-      query
-        ? {
-            OR: [
-              {
-                customer: { name: { contains: query, mode: "insensitive" } },
-              },
-              { description: { contains: query, mode: "insensitive" } },
-            ],
-          }
-        : {},
-    ],
-  };
-
-  if (statusParam) {
-    (whereClause.AND as Prisma.ComplaintWhereInput[]).push({
-      status: statusParam as ComplaintStatus,
-    });
-  }
-
-  if (startDateStart || startDateEnd) {
-    (whereClause.AND as Prisma.ComplaintWhereInput[]).push({
-      createdAt: {
-        gte: startDateStart,
-        lte: startDateEnd,
-      },
-    });
-  }
-
-  const complaints = await prisma.complaint.findMany({
-    where: whereClause,
-    include: {
-      customer: true,
-      service: true,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
+  const complaints = await getCachedComplaints({
+    query,
+    statusParam,
+    startDateStart: startDateStartString,
+    startDateEnd: startDateEndString,
   });
 
   const openCount = complaints.filter((c) => c.status === "OPEN").length;
